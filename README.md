@@ -90,6 +90,18 @@ client.stop()
 
 ---
 
+## 📁 Examples & Guides
+
+Check out the **[`examples/`](examples/)** folder for ready-to-run scripts and integration patterns:
+- [`01_live_telemetry.py`](examples/01_live_telemetry.py): Quickstart async live metrics streaming.
+- [`02_session_control.py`](examples/02_session_control.py): Inspect profiles, switch slots, toggle stealth mode.
+- [`03_threaded_gui.py`](examples/03_threaded_gui.py): Background BLE worker for GUI frameworks (PyQt, Tkinter, PySide).
+- [`04_mac_menu_widget.py`](examples/04_mac_menu_widget.py): Native macOS menu bar status widget.
+
+See **[`examples/README.md`](examples/README.md)** for full documentation and usage instructions.
+
+---
+
 ## 🖥️ Command-Line Interface (CLI)
 
 The package includes a command-line tool `puffco-ble`:
