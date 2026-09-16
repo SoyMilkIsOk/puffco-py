@@ -1,0 +1,6 @@
+# Netlify Clean URL Redirects for puffco-ble static site
+/docs      /docs.html   200
+/legal     /legal.html  200
+
+# Fallback
+/*         /index.html  200

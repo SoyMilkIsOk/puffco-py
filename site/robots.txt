@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://puffco-ble.dev/sitemap.xml

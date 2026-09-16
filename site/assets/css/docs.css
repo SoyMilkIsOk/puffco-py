@@ -1,0 +1,302 @@
+/* ==========================================================================
+   DOCUMENTATION PORTAL STYLING (docs.css)
+   Clean Sidebar • Search Bar • API Tables • Code Blocks with Copy
+   ========================================================================== */
+
+.docs-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 48px;
+  padding: 40px 0 80px;
+  position: relative;
+  align-items: start;
+}
+
+/* Sidebar Navigation */
+.docs-sidebar {
+  position: sticky;
+  top: calc(var(--nav-height) + 24px);
+  max-height: calc(100vh - var(--nav-height) - 48px);
+  overflow-y: auto;
+  padding-right: 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+}
+
+.docs-search-box {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.docs-search-input {
+  width: 100%;
+  background: rgba(14, 18, 28, 0.9);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 10px 14px 10px 38px;
+  color: var(--text-primary);
+  font-size: 0.88rem;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.docs-search-input:focus {
+  border-color: var(--neon-cyan);
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+}
+
+.search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+.sidebar-group {
+  margin-bottom: 24px;
+}
+
+.sidebar-group-title {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding-left: 12px;
+}
+
+.sidebar-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sidebar-nav-link {
+  display: block;
+  padding: 7px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  border-left: 2px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.sidebar-nav-link:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.sidebar-nav-link.active {
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.08);
+  border-left-color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+/* Documentation Content Area */
+.docs-content {
+  min-width: 0;
+  line-height: 1.7;
+}
+
+.docs-header {
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.docs-badge-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.docs-section {
+  margin-bottom: 56px;
+  scroll-margin-top: calc(var(--nav-height) + 30px);
+}
+
+.docs-section h2 {
+  font-size: 1.85rem;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.docs-section h3 {
+  font-size: 1.3rem;
+  margin: 28px 0 14px;
+  color: #e2e8f0;
+}
+
+.docs-section h4 {
+  font-size: 1.05rem;
+  margin: 20px 0 10px;
+  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+}
+
+.docs-section p {
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+  font-size: 0.98rem;
+}
+
+.docs-section ul, .docs-section ol {
+  margin: 12px 0 20px 24px;
+  color: var(--text-secondary);
+}
+
+.docs-section li {
+  margin-bottom: 8px;
+}
+
+/* API Tables */
+.api-table-wrapper {
+  overflow-x: auto;
+  margin: 20px 0 30px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: rgba(11, 14, 22, 0.7);
+}
+
+.api-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  text-align: left;
+}
+
+.api-table th {
+  background: rgba(18, 22, 35, 0.9);
+  padding: 12px 18px;
+  font-family: var(--font-heading);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.api-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: var(--text-secondary);
+}
+
+.api-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.api-table td code {
+  font-size: 0.84rem;
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Callout Alerts */
+.callout {
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin: 24px 0;
+  display: flex;
+  gap: 16px;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.callout-info {
+  background: rgba(0, 240, 255, 0.06);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  color: #cffafe;
+}
+
+.callout-warning {
+  background: rgba(255, 145, 0, 0.08);
+  border: 1px solid rgba(255, 145, 0, 0.3);
+  color: #ffedd5;
+}
+
+.callout-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+/* Code Snippet Blocks */
+.code-block {
+  background: #080a10;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-md);
+  margin: 18px 0 26px;
+  overflow: hidden;
+}
+
+.code-header {
+  height: 38px;
+  background: #0e111a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+}
+
+.code-lang-tag {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.btn-code-copy {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.btn-code-copy:hover {
+  color: var(--neon-cyan);
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.code-block pre {
+  padding: 18px;
+  overflow-x: auto;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: #e2e8f0;
+}
+
+/* Responsive Docs */
+@media (max-width: 900px) {
+  .docs-layout {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .docs-sidebar {
+    position: static;
+    max-height: none;
+    padding-right: 0;
+    margin-bottom: 24px;
+  }
+}

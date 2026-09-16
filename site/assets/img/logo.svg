@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+  <defs>
+    <!-- Background glow & chamber gradients -->
+    <radialGradient id="haloGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#ff007f" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#0c0d14" stop-opacity="0" />
+    </radialGradient>
+
+    <linearGradient id="neonRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f0ff" />
+      <stop offset="45%" stop-color="#7928ca" />
+      <stop offset="75%" stop-color="#ff007f" />
+      <stop offset="100%" stop-color="#ff8400" />
+    </linearGradient>
+
+    <linearGradient id="innerChamber" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#141824" />
+      <stop offset="100%" stop-color="#242b3d" />
+    </linearGradient>
+
+    <linearGradient id="bleGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00f0ff" />
+      <stop offset="100%" stop-color="#0077ff" />
+    </linearGradient>
+
+    <filter id="bloom" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Ambient background bloom -->
+  <circle cx="256" cy="256" r="230" fill="url(#haloGlow)" />
+
+  <!-- Outer Chamber Ring (Puffco Peak Pro Mood Light Ring) -->
+  <circle cx="256" cy="256" r="190" stroke="url(#neonRing)" stroke-width="8" stroke-linecap="round" filter="url(#bloom)" opacity="0.9" />
+  <circle cx="256" cy="256" r="190" stroke="url(#neonRing)" stroke-width="4" stroke-linecap="round" />
+
+  <!-- Segmented Telemetry Arc Accents -->
+  <circle cx="256" cy="256" r="208" stroke="#00f0ff" stroke-width="2" stroke-dasharray="14 36" opacity="0.6" />
+  <circle cx="256" cy="256" r="172" stroke="#ff007f" stroke-width="2" stroke-dasharray="8 24" opacity="0.5" />
+
+  <!-- Inner Chamber Glass / Carb Cap Base -->
+  <circle cx="256" cy="256" r="140" fill="url(#innerChamber)" stroke="#2b3448" stroke-width="3" />
+
+  <!-- Stylized Vapor Wave Path -->
+  <path d="M190 320 C180 270, 230 250, 230 210 C230 170, 205 165, 220 125 C230 95, 260 85, 275 110 C290 135, 265 170, 280 210 C295 250, 335 260, 320 320" 
+        stroke="url(#neonRing)" stroke-width="6" stroke-linecap="round" opacity="0.3" filter="url(#softGlow)" fill="none" />
+
+  <!-- Central Bluetooth BLE Rune + Cloud Fusion -->
+  <!-- Bluetooth Spine and Chevrons -->
+  <g filter="url(#softGlow)">
+    <!-- Vertical Spine -->
+    <line x1="256" y1="140" x2="256" y2="372" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" />
+    
+    <!-- Upper Diamond Chevron -->
+    <polyline points="256,256 316,200 256,144" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    
+    <!-- Lower Diamond Chevron -->
+    <polyline points="256,256 316,312 256,368" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    
+    <!-- Upper Left Diagonal Fin -->
+    <line x1="256" y1="200" x2="204" y2="152" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" />
+    
+    <!-- Lower Left Diagonal Fin -->
+    <line x1="256" y1="312" x2="204" y2="360" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" />
+  </g>
+
+  <!-- Core Neon Ember (Live Temperature Center) -->
+  <circle cx="256" cy="256" r="10" fill="#ffffff" filter="url(#bloom)" />
+  <circle cx="256" cy="256" r="6" fill="#00f0ff" />
+</svg>

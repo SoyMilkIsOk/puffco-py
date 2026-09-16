@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation | puffco-ble Python BLE & Telemetry Engine</title>
+  <meta name="description" content="Comprehensive guides, API reference, CLI manuals, and reverse-engineered Lorax VFS protocol specifications for puffco-ble.">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/docs.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       SITE HEADER
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="index.html" class="brand-logo" id="nav-brand">
+        <img src="assets/img/logo.svg" alt="puffco-ble logo" width="38" height="38">
+        <span>puffco<span class="gradient-text">-ble</span></span>
+        <span class="brand-badge">Docs</span>
+      </a>
+
+      <ul class="nav-links" id="main-nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#terminal-demo" class="nav-link">Terminal CLI</a></li>
+        <li><a href="index.html#simulator-demo" class="nav-link">Live Simulator</a></li>
+        <li><a href="docs.html" class="nav-link active">Documentation</a></li>
+        <li><a href="legal.html" class="nav-link">Legal</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="https://buymeacoffee.com/soymilk" target="_blank" rel="noopener noreferrer" class="btn-coffee">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+          </svg>
+          <span>Buy Me a Coffee</span>
+        </a>
+
+        <a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-icon" title="View on GitHub">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+        </a>
+
+        <button class="mobile-toggle" aria-label="Toggle navigation menu">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       DOCUMENTATION LAYOUT
+       ======================================================================== -->
+  <div class="container">
+    <div class="docs-layout">
+
+      <!-- LEFT SIDEBAR -->
+      <aside class="docs-sidebar">
+        <div class="docs-search-box">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="docs-search-input" class="docs-search-input" placeholder="Search docs..." autocomplete="off">
+        </div>
+
+        <nav>
+          <div class="sidebar-group">
+            <div class="sidebar-group-title">Getting Started</div>
+            <ul class="sidebar-nav-list">
+              <li><a href="#introduction" class="sidebar-nav-link active">Introduction</a></li>
+              <li><a href="#installation" class="sidebar-nav-link">Installation</a></li>
+              <li><a href="#hardware-support" class="sidebar-nav-link">Hardware &amp; Platforms</a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-group">
+            <div class="sidebar-group-title">Guides &amp; Usage</div>
+            <ul class="sidebar-nav-list">
+              <li><a href="#quickstart-async" class="sidebar-nav-link">Async Client (Core)</a></li>
+              <li><a href="#quickstart-threaded" class="sidebar-nav-link">Threaded / GUI Client</a></li>
+              <li><a href="#cli-guide" class="sidebar-nav-link">CLI Commands</a></li>
+              <li><a href="#mac-widget" class="sidebar-nav-link">macOS Status Bar App</a></li>
+            </ul>
+          </div>
+
+          <div class="sidebar-group">
+            <div class="sidebar-group-title">Reference</div>
+            <ul class="sidebar-nav-list">
+              <li><a href="#python-api" class="sidebar-nav-link">Python API Reference</a></li>
+              <li><a href="#telemetry-model" class="sidebar-nav-link">Telemetry Models</a></li>
+              <li><a href="#protocol-spec" class="sidebar-nav-link">Lorax VFS Protocol</a></li>
+              <li><a href="#troubleshooting" class="sidebar-nav-link">Troubleshooting</a></li>
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="docs-content">
+        <div class="docs-header">
+          <h1>puffco-ble Documentation</h1>
+          <p class="hero-subtitle" style="margin: 8px 0 0; text-align: left; font-size: 1.1rem;">
+            Complete developer documentation and reverse-engineering reference for Puffco Peak Pro and Proxy Bluetooth Low Energy hardware.
+          </p>
+          <div class="docs-badge-row">
+            <span class="brand-badge">Python 3.9–3.12</span>
+            <span class="brand-badge">Bleak GATT</span>
+            <span class="brand-badge">Lorax VFS v5.x</span>
+            <span class="brand-badge">MIT License</span>
+          </div>
+        </div>
+
+        <!-- 1. INTRODUCTION -->
+        <section class="docs-section" id="introduction">
+          <h2>1. Introduction</h2>
+          <p>
+            <code>puffco-ble</code> is a standalone, lightweight, asynchronous Python library designed to communicate with <strong>Puffco Peak Pro</strong> (V1, V2, Limited Editions) and <strong>Puffco Proxy</strong> vaporizers using standard Bluetooth Low Energy (BLE).
+          </p>
+          <p>
+            Modern Puffco devices use a proprietary firmware protocol known as the <strong>Lorax Virtual File System (VFS)</strong>. Rather than using fixed GATT characteristics for every sensor, Puffco multiplexes virtual file paths over a single write characteristic and a notification characteristic. <code>puffco-ble</code> implements this protocol natively, providing:
+          </p>
+          <ul>
+            <li><strong>Low latency streaming:</strong> Adaptive polling engine operating at up to ~16 FPS (60ms) during active heating sessions.</li>
+            <li><strong>Cryptographic authentication:</strong> Automatically solves the SHA-256 access seed challenge required by modern firmware.</li>
+            <li><strong>Desktop GUI friendly:</strong> Dedicated background-worker thread client (<code>ThreadedPuffcoClient</code>) for Tkinter, PyQt, and macOS status bar widgets.</li>
+            <li><strong>Hardware telemetry:</strong> Live bowl temperature (°F/°C), battery %, charging status, chamber detection (3D, 3DXL, Proxy), and lifetime dab counter.</li>
+          </ul>
+        </section>
+
+        <!-- 2. INSTALLATION -->
+        <section class="docs-section" id="installation">
+          <h2>2. Installation</h2>
+          <p>
+            <code>puffco-ble</code> can be installed via PyPI or built directly from source. Requires Python 3.9 or higher.
+          </p>
+
+          <h3>Standard Installation (PyPI)</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang-tag">bash</span>
+              <button class="btn-code-copy" data-copy="pip install puffco-ble">Copy</button>
+            </div>
+            <pre><code>pip install puffco-ble</code></pre>
+          </div>
+
+          <h3>Installing Optional Extras</h3>
+          <p>
+            To include optional Rich CLI formatting and macOS menu bar widget dependencies:
+          </p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang-tag">bash</span>
+              <button class="btn-code-copy" data-copy="pip install &quot;puffco-ble[cli,gui]&quot;">Copy</button>
+            </div>
+            <pre><code># Install with CLI and macOS GUI support
+pip install "puffco-ble[cli,gui]"</code></pre>
+          </div>
+
+          <h3>Installing from GitHub Repository</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang-tag">bash</span>
+              <button class="btn-code-copy" data-copy="git clone https://github.com/SoyMilkIsOk/puffco-ble.git&#10;cd puffco-ble&#10;pip install -e .">Copy</button>
+            </div>
+            <pre><code>git clone https://github.com/SoyMilkIsOk/puffco-ble.git
+cd puffco-ble
+pip install -e .</code></pre>
+          </div>
+        </section>
+
+        <!-- 3. HARDWARE & PLATFORMS -->
+        <section class="docs-section" id="hardware-support">
+          <h2>3. Hardware &amp; Platform Support</h2>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Hardware Device</th>
+                  <th>Chambers Tested</th>
+                  <th>Firmware Versions</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Puffco Peak Pro V2</strong> (Onyx, Pearl, Flourish)</td>
+                  <td>3DXL, Standard 3D</td>
+                  <td>v5.0.0 – v5.4.x (Lorax)</td>
+                  <td><span style="color: var(--neon-green);">✔ Fully Supported</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Puffco Peak Pro V1</strong> (Indiglow, Opal, Guardian)</td>
+                  <td>Standard 3D, Original Ceramic</td>
+                  <td>v4.x, v5.x</td>
+                  <td><span style="color: var(--neon-green);">✔ Fully Supported</span></td>
+                </tr>
+                <tr>
+                  <td><strong>Puffco Proxy</strong></td>
+                  <td>Proxy 3D Chamber</td>
+                  <td>All production revisions</td>
+                  <td><span style="color: var(--neon-green);">✔ Supported</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <span class="callout-icon">ℹ️</span>
+            <div>
+              <strong>Operating System BLE Permissions:</strong><br>
+              • <strong>macOS:</strong> Ensure Terminal / VS Code / Python has Bluetooth permissions enabled in <em>System Settings &gt; Privacy &amp; Security &gt; Bluetooth</em>.<br>
+              • <strong>Linux:</strong> Ensure <code>bluez</code> is installed. You may need to add your user to the <code>bluetooth</code> group or run with appropriate capabilities.
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. QUICKSTART ASYNC -->
+        <section class="docs-section" id="quickstart-async">
+          <h2>4. Async Python Quickstart (Core Client)</h2>
+          <p>
+            <code>PuffcoClient</code> is an asynchronous context manager powered by <code>asyncio</code> and <code>bleak</code>. It automatically discovers the nearest Puffco device, authenticates, and starts a telemetry polling engine.
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang-tag">python</span>
+              <button class="btn-code-copy" data-copy="import asyncio&#10;from puffco_ble import PuffcoClient&#10;&#10;async def main():&#10;    # Automatically scans for and connects to nearest Puffco&#10;    async with PuffcoClient() as client:&#10;        print(f&quot;Connected to: {client.telemetry.device_name}&quot;)&#10;        print(f&quot;Chamber: {client.telemetry.chamber_name} | Battery: {client.telemetry.battery_pct}%&quot;)&#10;&#10;        # Register a live stream update listener&#10;        def on_telemetry(t):&#10;            print(f&quot;\rTemp: {t.live_temp_f:.1f}°F | State: {t.state_name}&quot;, end=&quot;&quot;)&#10;&#10;        client.add_telemetry_listener(on_telemetry)&#10;        await client.start_telemetry_stream()&#10;&#10;        # Stream for 15 seconds&#10;        await asyncio.sleep(15)&#10;&#10;asyncio.run(main())">Copy</button>
+            </div>
+            <pre><code>import asyncio
+from puffco_ble import PuffcoClient
+
+async def main():
+    # Automatically scans for and connects to nearest Puffco
+    async with PuffcoClient() as client:
+        print(f"Connected to: {client.telemetry.device_name}")
+        print(f"Chamber: {client.telemetry.chamber_name} | Battery: {client.telemetry.battery_pct}%")
+
+        # Register a live stream update listener
+        def on_telemetry(t):
+            print(f"\rTemp: {t.live_temp_f:.1f}°F | State: {t.state_name}", end="")
+
+        client.add_telemetry_listener(on_telemetry)
+        await client.start_telemetry_stream()
+
+        # Stream for 15 seconds
+        await asyncio.sleep(15)
+
+asyncio.run(main())</code></pre>
+          </div>
+        </section>
+
+        <!-- 5. QUICKSTART THREADED / GUI -->
+        <section class="docs-section" id="quickstart-threaded">
+          <h2>5. Synchronous &amp; Desktop GUI Quickstart</h2>
+          <p>
+            If you are building a desktop GUI (Tkinter, PyQt, PySide, wxPython) or a synchronous automation script, use <code>ThreadedPuffcoClient</code>. It runs the asynchronous BLE event loop on an isolated daemon worker thread and exposes simple, non-blocking synchronous methods to your main UI thread:
+          </p>
+
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang-tag">python</span>
+              <button class="btn-code-copy" data-copy="import time&#10;from puffco_ble import ThreadedPuffcoClient&#10;&#10;client = ThreadedPuffcoClient()&#10;&#10;# Register real-time callbacks from background worker thread&#10;client.add_telemetry_listener(lambda t: print(f&quot;Live Temp: {t.live_temp_f:.1f}°F&quot;))&#10;&#10;client.start()&#10;&#10;if client.wait_connected(timeout=10.0):&#10;    print(client.telemetry.summary())&#10;    &#10;    # Thread-safe session controls&#10;    client.set_profile(slot=1)&#10;    client.start_session()&#10;    time.sleep(10)&#10;    client.boost()&#10;    time.sleep(10)&#10;    client.stop_session()&#10;&#10;client.stop()">Copy</button>
+            </div>
+            <pre><code>import time
+from puffco_ble import ThreadedPuffcoClient
+
+client = ThreadedPuffcoClient()
+
+# Register real-time callbacks from background worker thread
+client.add_telemetry_listener(lambda t: print(f"Live Temp: {t.live_temp_f:.1f}°F"))
+
+client.start()
+
+if client.wait_connected(timeout=10.0):
+    print(client.telemetry.summary())
+    
+    # Thread-safe session controls
+    client.set_profile(slot=1)
+    client.start_session()
+    time.sleep(10)
+    client.boost()
+    time.sleep(10)
+    client.stop_session()
+
+client.stop()</code></pre>
+          </div>
+        </section>
+
+        <!-- 6. CLI GUIDE -->
+        <section class="docs-section" id="cli-guide">
+          <h2>6. Command-Line Interface (CLI) Manual</h2>
+          <p>
+            The package includes an out-of-the-box CLI utility named <code>puffco-ble</code> for rapid terminal interaction:
+          </p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Command</th>
+                  <th>Options</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>puffco-ble scan</code></td>
+                  <td><code>-t, --timeout &lt;sec&gt;</code> (default: 5.0)</td>
+                  <td>Scans BLE advertisements and prints discovered Puffco devices with MAC and RSSI signal.</td>
+                </tr>
+                <tr>
+                  <td><code>puffco-ble monitor</code></td>
+                  <td><code>--mac &lt;MAC/UUID&gt;</code> (optional)</td>
+                  <td>Live streams an interactive terminal HUD with bowl temp, battery %, and sesh state.</td>
+                </tr>
+                <tr>
+                  <td><code>puffco-ble info</code></td>
+                  <td><code>--mac &lt;MAC/UUID&gt;</code> (optional)</td>
+                  <td>Dumps hardware serial, firmware version, lifetime dabs odometer, and all 4 profiles.</td>
+                </tr>
+                <tr>
+                  <td><code>puffco-ble sesh &lt;action&gt;</code></td>
+                  <td><code>start</code>, <code>stop</code>, or <code>boost</code><br><code>--mac &lt;MAC/UUID&gt;</code></td>
+                  <td>Sends immediate heating commands to the connected hardware.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="callout callout-info">
+            <span class="callout-icon">💡</span>
+            <div>
+              <strong>Targeting Specific Units:</strong> If multiple devices are in range, supply <code>--mac AA:BB:CC:DD:EE:FF</code> (or macOS CoreBluetooth UUID) to target a specific vaporizer.
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. MAC MENU BAR WIDGET -->
+        <section class="docs-section" id="mac-widget">
+          <h2>7. Native macOS Menu Bar Widget</h2>
+          <p>
+            <code>puffco-ble</code> includes a native macOS status bar menu app built using <code>rumps</code> in <code>examples/04_mac_menu_widget.py</code>:
+          </p>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang-tag">bash</span>
+              <button class="btn-code-copy" data-copy="pip install &quot;puffco-ble[gui]&quot;&#10;python3 examples/04_mac_menu_widget.py">Copy</button>
+            </div>
+            <pre><code># Install rumps GUI dependency
+pip install "puffco-ble[gui]"
+
+# Launch the widget
+python3 examples/04_mac_menu_widget.py</code></pre>
+          </div>
+          <p>
+            The widget displays live bowl temperature directly in your menu bar (<code>🔥 520°F (35s)</code> or <code>💨 480°F | 85%</code> when idle) and provides one-click dropdown actions to start, boost, or abort sessions.
+          </p>
+        </section>
+
+        <!-- 8. PYTHON API REFERENCE -->
+        <section class="docs-section" id="python-api">
+          <h2>8. Python API Reference</h2>
+          <h3>PuffcoClient Methods</h3>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>Return</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>async connect(timeout=10.0)</code></td>
+                  <td><code>bool</code></td>
+                  <td>Connects via Bleak GATT and solves the Lorax SHA-256 access seed challenge.</td>
+                </tr>
+                <tr>
+                  <td><code>async disconnect()</code></td>
+                  <td><code>None</code></td>
+                  <td>Gracefully terminates GATT connection and stops polling loops.</td>
+                </tr>
+                <tr>
+                  <td><code>async start_session()</code></td>
+                  <td><code>None</code></td>
+                  <td>Triggers heating session using the currently active profile.</td>
+                </tr>
+                <tr>
+                  <td><code>async stop_session()</code></td>
+                  <td><code>None</code></td>
+                  <td>Aborts active heating session immediately.</td>
+                </tr>
+                <tr>
+                  <td><code>async boost()</code></td>
+                  <td><code>None</code></td>
+                  <td>Applies heat boost (+15s duration and +10°F target temp).</td>
+                </tr>
+                <tr>
+                  <td><code>async set_profile(slot: int)</code></td>
+                  <td><code>None</code></td>
+                  <td>Switches active profile slot (integer 0 to 3).</td>
+                </tr>
+                <tr>
+                  <td><code>async set_stealth_mode(enabled: bool)</code></td>
+                  <td><code>None</code></td>
+                  <td>Toggles device mood lights on or off.</td>
+                </tr>
+                <tr>
+                  <td><code>add_telemetry_listener(callback)</code></td>
+                  <td><code>None</code></td>
+                  <td>Registers a function <code>callback(telemetry)</code> called on state changes.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 9. TELEMETRY MODEL -->
+        <section class="docs-section" id="telemetry-model">
+          <h2>9. Telemetry Model (<code>PuffcoTelemetry</code>)</h2>
+          <p>
+            The telemetry dataclass is accessible via <code>client.telemetry</code>:
+          </p>
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Property</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>live_temp_f</code></td>
+                  <td><code>float</code></td>
+                  <td>Current real-time bowl temperature in degrees Fahrenheit.</td>
+                </tr>
+                <tr>
+                  <td><code>target_temp_f</code></td>
+                  <td><code>float</code></td>
+                  <td>Target setpoint temperature of the active profile.</td>
+                </tr>
+                <tr>
+                  <td><code>battery_pct</code></td>
+                  <td><code>int</code></td>
+                  <td>Battery state of charge percentage (0–100%).</td>
+                </tr>
+                <tr>
+                  <td><code>is_charging</code></td>
+                  <td><code>bool</code></td>
+                  <td>True if device is plugged into USB-C or resting on Qi dock.</td>
+                </tr>
+                <tr>
+                  <td><code>chamber_name</code></td>
+                  <td><code>str</code></td>
+                  <td>Detected chamber type (<code>"3D"</code>, <code>"3DXL"</code>, <code>"Proxy"</code>, <code>"None"</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>operating_state</code></td>
+                  <td><code>OperatingState</code></td>
+                  <td>Enum: <code>IDLE</code>, <code>HEAT_PREHEAT</code>, <code>HEAT_ACTIVE</code>, <code>HEAT_FADE</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>lifetime_dabs</code></td>
+                  <td><code>int</code></td>
+                  <td>Total completed sessions odometer stored in hardware memory.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 10. LORAX VFS PROTOCOL -->
+        <section class="docs-section" id="protocol-spec">
+          <h2>10. Reverse-Engineered Lorax VFS Protocol</h2>
+          <p>
+            Puffco firmware implements a sequence-multiplexed file system over standard Bluetooth LE:
+          </p>
+
+          <div class="api-table-wrapper">
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>GATT Entity</th>
+                  <th>UUID</th>
+                  <th>Properties</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Service</strong></td>
+                  <td><code>e276967f-ea8a-478a-a92e-d78f5dd15dd5</code></td>
+                  <td>Primary Lorax BLE Service</td>
+                </tr>
+                <tr>
+                  <td><strong>Command Characteristic</strong></td>
+                  <td><code>60133d5c-5727-4f2c-9697-d842c5292a3c</code></td>
+                  <td>Write Without Response</td>
+                </tr>
+                <tr>
+                  <td><strong>Reply Characteristic</strong></td>
+                  <td><code>8dc5ec05-8f7d-45ad-99db-3fbde65dbd9c</code></td>
+                  <td>Notify / Indicate</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Lorax VFS Paths Reference</h3>
+          <ul>
+            <li><code>/p/app/stat/id</code>: Operating state byte (0 = Idle, 1 = Preheat, 2 = Sesh, 3 = Fade).</li>
+            <li><code>/p/app/htr/temp</code>: Chamber temperature sensor reading.</li>
+            <li><code>/p/app/mc</code>: Mode control opcode (<code>0x07</code> = Start, <code>0x08</code> = Stop, <code>0x09</code> = Boost).</li>
+            <li><code>/p/bat/soc</code>: Battery State of Charge percentage.</li>
+            <li><code>/p/app/odom/0/nc</code>: Lifetime completed dabs counter.</li>
+          </ul>
+        </section>
+
+        <!-- 11. TROUBLESHOOTING -->
+        <section class="docs-section" id="troubleshooting">
+          <h2>11. Troubleshooting &amp; FAQs</h2>
+          <h3>Device not discovered during scan</h3>
+          <p>
+            Ensure your Puffco is powered on and within 5–10 feet. If your device is currently connected to the official Puffco Connect smartphone app, Bluetooth Low Energy will reject secondary central connections. Disconnect the official app and re-run <code>puffco-ble scan</code>.
+          </p>
+
+          <h3>Permission denied on macOS</h3>
+          <p>
+            In macOS Ventura and Sonoma, terminal emulators require explicit Bluetooth authorization. Go to <em>System Settings &gt; Privacy &amp; Security &gt; Bluetooth</em> and ensure your terminal app (Terminal, iTerm2, Alacritty, or VS Code) is toggled ON.
+          </p>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       SITE FOOTER
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <div>&copy; 2024–2026 puffco-ble contributors. Released under the MIT License.</div>
+        <div><a href="legal.html" class="footer-link">Legal &amp; Trademark Disclaimers</a></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="assets/js/analytics.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
