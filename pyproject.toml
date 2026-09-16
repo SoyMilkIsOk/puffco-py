@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "puffco-ble"
+version = "0.1.0"
+description = "Modern, standalone Python BLE client and telemetry engine for Puffco Peak Pro and Proxy devices."
+readme = "README.md"
+authors = [
+    { name = "Sam S." }
+]
+license = { text = "MIT" }
+keywords = ["puffco", "peak", "proxy", "bluetooth", "ble", "lorax", "iot", "reverse-engineering"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: System :: Hardware :: Hardware Drivers",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "bleak>=0.21.0",
+]
+
+[project.optional-dependencies]
+cli = [
+    "rich>=13.0.0",
+]
+gui = [
+    "rumps>=0.4.0; platform_system=='Darwin'",
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+]
+
+[project.scripts]
+puffco-ble = "puffco_ble.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/SoyMilkIsOk/puffco-ble"
+Documentation = "https://github.com/SoyMilkIsOk/puffco-ble#readme"
+Repository = "https://github.com/SoyMilkIsOk/puffco-ble.git"
+"Bug Tracker" = "https://github.com/SoyMilkIsOk/puffco-ble/issues"
