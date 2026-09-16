@@ -7,8 +7,12 @@ import asyncio
 import sys
 import time
 
-from .client import PuffcoClient
-from .discovery import scan_puffco_devices
+try:
+    from .client import PuffcoClient
+    from .discovery import scan_puffco_devices
+except ImportError:
+    from puffco_ble.client import PuffcoClient
+    from puffco_ble.discovery import scan_puffco_devices
 
 
 def cmd_scan(args):
