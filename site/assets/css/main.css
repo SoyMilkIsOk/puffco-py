@@ -465,6 +465,7 @@ pre code {
   text-decoration: none;
   transition: all var(--transition-fast);
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .btn-coffee:hover {

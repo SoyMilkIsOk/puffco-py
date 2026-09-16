@@ -32,8 +32,9 @@ This directory is completely self-contained and ready for **instant drag-and-dro
   ```
 - The built-in GDPR/CCPA cookie consent banner will automatically manage visitor consent and load the tracker when permitted.
 
-### 2. Buy Me a Coffee Username
-- In [`index.html`](index.html) and [`docs.html`](docs.html), search for `buymeacoffee.com/soymilk` and replace `soymilk` with your username.
+### 2. Buy Me a Coffee Link
+- The footer "Buy Me a Coffee" button links directly to `https://buymeacoffee.com/SoyMilkIsOk` in a new tab.
+- To update your username, search for `buymeacoffee.com/SoyMilkIsOk` across [`index.html`](index.html), [`docs.html`](docs.html), and [`legal.html`](legal.html).
 
 ### 3. Custom Domain
 - In Netlify, go to **Domain management > Add custom domain** (e.g., `puffco.dev` or `puffco-py.com`).
