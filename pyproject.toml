@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["puffco_ble*"]
+include = ["puffco_py*"]
 exclude = ["site*", "tests*", "examples*", "build*"]
 
 [project]
-name = "puffco-ble"
+name = "puffco-py"
 version = "0.1.0"
 description = "Modern, standalone Python BLE client and telemetry engine for Puffco Peak Pro and Proxy devices."
 readme = "README.md"
@@ -46,10 +46,10 @@ dev = [
 ]
 
 [project.scripts]
-puffco-ble = "puffco_ble.cli:main"
+puffco-py = "puffco_py.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/SoyMilkIsOk/puffco-ble"
-Documentation = "https://github.com/SoyMilkIsOk/puffco-ble#readme"
-Repository = "https://github.com/SoyMilkIsOk/puffco-ble.git"
-"Bug Tracker" = "https://github.com/SoyMilkIsOk/puffco-ble/issues"
+Homepage = "https://github.com/SoyMilkIsOk/puffco-py"
+Documentation = "https://github.com/SoyMilkIsOk/puffco-py#readme"
+Repository = "https://github.com/SoyMilkIsOk/puffco-py.git"
+"Bug Tracker" = "https://github.com/SoyMilkIsOk/puffco-py/issues"

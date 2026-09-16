@@ -1,6 +1,6 @@
-# puffco-ble Examples & Integration Guides 💡
+# puffco-py Examples & Integration Guides 💡
 
-This directory contains clean, standalone example scripts demonstrating how to interact with Puffco Peak Pro and Proxy devices using the `puffco-ble` library.
+This directory contains clean, standalone example scripts demonstrating how to interact with Puffco Peak Pro and Proxy devices using the `puffco-py` library.
 
 ---
 

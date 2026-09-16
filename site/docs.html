@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documentation — puffco-ble</title>
-  <meta name="description" content="Complete developer documentation, API reference, CLI manual, and protocol specs for puffco-ble.">
+  <title>Documentation — puffco-py</title>
+  <meta name="description" content="Complete developer documentation, API reference, CLI manual, and protocol specs for puffco-py.">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/img/puffco-ble.svg">
+  <link rel="icon" type="image/svg+xml" href="assets/img/puffco-py.svg">
 
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-HL07GGMKE1"></script>
@@ -29,8 +29,8 @@
   <header class="site-header">
     <div class="container nav-wrap">
       <a href="index.html" class="brand-logo" id="nav-brand">
-        <img src="assets/img/puffco-ble.svg" alt="puffco-ble" width="17" height="28">
-        <span>puffco<span class="accent">-ble</span></span>
+        <img src="assets/img/puffco-py.svg" alt="puffco-py" width="17" height="28">
+        <span>puffco<span class="accent">-py</span></span>
       </a>
 
       <ul class="nav-links" id="main-nav-links">
@@ -40,7 +40,7 @@
       </ul>
 
       <div class="nav-actions">
-        <a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="btn-github" title="View on GitHub">
+        <a href="https://github.com/SoyMilkIsOk/puffco-py" target="_blank" rel="noopener noreferrer" class="btn-github" title="View on GitHub">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
@@ -123,10 +123,10 @@
         <section class="docs-section" id="introduction">
           <h2>Introduction</h2>
           <p>
-            <code>puffco-ble</code> is a standalone, lightweight, asynchronous Python library for communicating with <strong>Puffco Peak Pro</strong> (V1, V2, Limited Editions) and <strong>Puffco Proxy</strong> vaporizers using Bluetooth Low Energy (BLE).
+            <code>puffco-py</code> is a standalone, lightweight, asynchronous Python library for communicating with <strong>Puffco Peak Pro</strong> (V1, V2, Limited Editions) and <strong>Puffco Proxy</strong> vaporizers using Bluetooth Low Energy (BLE).
           </p>
           <p>
-            Modern Puffco devices use a proprietary firmware protocol called the <strong>Lorax Virtual File System (VFS)</strong>. Rather than using fixed GATT characteristics for every sensor, Puffco multiplexes virtual file paths over a single write/notify characteristic pair. <code>puffco-ble</code> implements this protocol natively, providing:
+            Modern Puffco devices use a proprietary firmware protocol called the <strong>Lorax Virtual File System (VFS)</strong>. Rather than using fixed GATT characteristics for every sensor, Puffco multiplexes virtual file paths over a single write/notify characteristic pair. <code>puffco-py</code> implements this protocol natively, providing:
           </p>
           <ul>
             <li><strong>Low latency streaming</strong> — Adaptive polling at up to ~16 FPS (60ms) during active heating sessions.</li>
@@ -147,9 +147,9 @@
           <div class="code-block">
             <div class="code-header">
               <span class="code-lang-tag">bash</span>
-              <button class="btn-code-copy" data-copy="pip install puffco-ble">Copy</button>
+              <button class="btn-code-copy" data-copy="pip install puffco-py">Copy</button>
             </div>
-            <pre><code>pip install puffco-ble</code></pre>
+            <pre><code>pip install puffco-py</code></pre>
           </div>
 
           <h3>Optional Extras</h3>
@@ -157,19 +157,19 @@
           <div class="code-block">
             <div class="code-header">
               <span class="code-lang-tag">bash</span>
-              <button class="btn-code-copy" data-copy='pip install "puffco-ble[cli,gui]"'>Copy</button>
+              <button class="btn-code-copy" data-copy='pip install "puffco-py[cli,gui]"'>Copy</button>
             </div>
-            <pre><code>pip install "puffco-ble[cli,gui]"</code></pre>
+            <pre><code>pip install "puffco-py[cli,gui]"</code></pre>
           </div>
 
           <h3>From Source</h3>
           <div class="code-block">
             <div class="code-header">
               <span class="code-lang-tag">bash</span>
-              <button class="btn-code-copy" data-copy="git clone https://github.com/SoyMilkIsOk/puffco-ble.git&#10;cd puffco-ble&#10;pip install -e .">Copy</button>
+              <button class="btn-code-copy" data-copy="git clone https://github.com/SoyMilkIsOk/puffco-py.git&#10;cd puffco-py&#10;pip install -e .">Copy</button>
             </div>
-            <pre><code>git clone https://github.com/SoyMilkIsOk/puffco-ble.git
-cd puffco-ble
+            <pre><code>git clone https://github.com/SoyMilkIsOk/puffco-py.git
+cd puffco-py
 pip install -e .</code></pre>
           </div>
         </section>
@@ -231,7 +231,7 @@ pip install -e .</code></pre>
             <div class="code-header">
               <span class="code-lang-tag">python</span>
               <button class="btn-code-copy" data-copy='import asyncio
-from puffco_ble import PuffcoClient
+from puffco_py import PuffcoClient
 
 async def main():
     async with PuffcoClient() as client:
@@ -248,7 +248,7 @@ async def main():
 asyncio.run(main())'>Copy</button>
             </div>
             <pre><code>import asyncio
-from puffco_ble import PuffcoClient
+from puffco_py import PuffcoClient
 
 async def main():
     async with PuffcoClient() as client:
@@ -277,7 +277,7 @@ asyncio.run(main())</code></pre>
             <div class="code-header">
               <span class="code-lang-tag">python</span>
               <button class="btn-code-copy" data-copy='import time
-from puffco_ble import ThreadedPuffcoClient
+from puffco_py import ThreadedPuffcoClient
 
 client = ThreadedPuffcoClient()
 client.add_telemetry_listener(lambda t: print(f"Live Temp: {t.live_temp_f:.1f}°F"))
@@ -297,7 +297,7 @@ if client.wait_connected(timeout=10.0):
 client.stop()'>Copy</button>
             </div>
             <pre><code>import time
-from puffco_ble import ThreadedPuffcoClient
+from puffco_py import ThreadedPuffcoClient
 
 client = ThreadedPuffcoClient()
 client.add_telemetry_listener(lambda t: print(f"Live Temp: {t.live_temp_f:.1f}°F"))
@@ -322,7 +322,7 @@ client.stop()</code></pre>
         <section class="docs-section" id="cli-guide">
           <h2>CLI Commands</h2>
           <p>
-            The package includes an out-of-the-box CLI utility named <code>puffco-ble</code>:
+            The package includes an out-of-the-box CLI utility named <code>puffco-py</code>:
           </p>
 
           <div class="api-table-wrapper">
@@ -336,22 +336,22 @@ client.stop()</code></pre>
               </thead>
               <tbody>
                 <tr>
-                  <td><code>puffco-ble scan</code></td>
+                  <td><code>puffco-py scan</code></td>
                   <td><code>-t, --timeout &lt;sec&gt;</code></td>
                   <td>Scan BLE advertisements for nearby Puffco devices.</td>
                 </tr>
                 <tr>
-                  <td><code>puffco-ble monitor</code></td>
+                  <td><code>puffco-py monitor</code></td>
                   <td><code>--mac &lt;addr&gt;</code></td>
                   <td>Live stream an interactive terminal HUD with temp, battery, and state.</td>
                 </tr>
                 <tr>
-                  <td><code>puffco-ble info</code></td>
+                  <td><code>puffco-py info</code></td>
                   <td><code>--mac &lt;addr&gt;</code></td>
                   <td>Dump hardware serial, firmware version, dab count, and profiles.</td>
                 </tr>
                 <tr>
-                  <td><code>puffco-ble sesh &lt;action&gt;</code></td>
+                  <td><code>puffco-py sesh &lt;action&gt;</code></td>
                   <td><code>start</code>, <code>stop</code>, <code>boost</code></td>
                   <td>Send immediate heating commands to the connected device.</td>
                 </tr>
@@ -376,9 +376,9 @@ client.stop()</code></pre>
           <div class="code-block">
             <div class="code-header">
               <span class="code-lang-tag">bash</span>
-              <button class="btn-code-copy" data-copy='pip install "puffco-ble[gui]"&#10;python3 examples/04_mac_menu_widget.py'>Copy</button>
+              <button class="btn-code-copy" data-copy='pip install "puffco-py[gui]"&#10;python3 examples/04_mac_menu_widget.py'>Copy</button>
             </div>
-            <pre><code>pip install "puffco-ble[gui]"
+            <pre><code>pip install "puffco-py[gui]"
 python3 examples/04_mac_menu_widget.py</code></pre>
           </div>
           <p>
@@ -572,7 +572,7 @@ python3 examples/04_mac_menu_widget.py</code></pre>
 
           <h3>Device not found during scan</h3>
           <p>
-            Ensure your Puffco is powered on and within range (~5–10 feet). If connected to the official Puffco Connect app, BLE will reject secondary connections. Disconnect the app and re-run <code>puffco-ble scan</code>.
+            Ensure your Puffco is powered on and within range (~5–10 feet). If connected to the official Puffco Connect app, BLE will reject secondary connections. Disconnect the app and re-run <code>puffco-py scan</code>.
           </p>
 
           <h3>Permission denied on macOS</h3>
@@ -599,12 +599,12 @@ python3 examples/04_mac_menu_widget.py</code></pre>
     <div class="container">
       <div class="footer-content">
         <div class="footer-left">
-          <div class="footer-copy">&copy; 2024–2026 puffco-ble contributors &bull; MIT License</div>
+          <div class="footer-copy">&copy; 2024–2026 puffco-py contributors &bull; MIT License</div>
           <ul class="footer-links">
             <li><a href="index.html" class="footer-link">Home</a></li>
             <li><a href="legal.html" class="footer-link">Legal</a></li>
-            <li><a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a></li>
-            <li><a href="https://pypi.org/project/puffco-ble/" target="_blank" rel="noopener noreferrer" class="footer-link">PyPI</a></li>
+            <li><a href="https://github.com/SoyMilkIsOk/puffco-py" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a></li>
+            <li><a href="https://pypi.org/project/puffco-py/" target="_blank" rel="noopener noreferrer" class="footer-link">PyPI</a></li>
           </ul>
         </div>
         <div class="footer-right">
@@ -617,7 +617,7 @@ python3 examples/04_mac_menu_widget.py</code></pre>
         </div>
       </div>
       <p class="footer-disclaimer">
-        <strong>Disclaimer:</strong> puffco-ble is an independent open-source project. It is NOT affiliated with, authorized, maintained, sponsored, or endorsed by Puff Corp. (registered in Delaware). All trademarks belong to their respective owners.
+        <strong>Disclaimer:</strong> puffco-py is an independent open-source project. It is NOT affiliated with, authorized, maintained, sponsored, or endorsed by Puff Corp. (registered in Delaware). All trademarks belong to their respective owners.
       </p>
     </div>
   </footer>

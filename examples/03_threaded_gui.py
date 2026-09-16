@@ -6,7 +6,7 @@ thread, allowing simple synchronous method calls and callbacks from the main thr
 """
 
 import time
-from puffco_ble import ThreadedPuffcoClient
+from puffco_py import ThreadedPuffcoClient
 
 
 def main():

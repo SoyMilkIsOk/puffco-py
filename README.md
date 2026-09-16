@@ -1,7 +1,7 @@
-# puffco-ble 💨
+# puffco-py 💨
 
-[![PyPI Version](https://img.shields.io/badge/pypi-v0.1.0-blue.svg)](https://pypi.org/project/puffco-ble/)
-[![Python Versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-brightgreen.svg)](https://pypi.org/project/puffco-ble/)
+[![PyPI Version](https://img.shields.io/badge/pypi-v0.1.0-blue.svg)](https://pypi.org/project/puffco-py/)
+[![Python Versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-brightgreen.svg)](https://pypi.org/project/puffco-py/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Powered by Bleak](https://img.shields.io/badge/BLE-Bleak-blueviolet.svg)](https://github.com/hbldh/bleak)
 
@@ -16,18 +16,18 @@ A standalone, modern, asynchronous Python client and real-time telemetry engine 
 - 🎮 **Full Session Control**: Start sessions, abort/stop, trigger heat boosts, change active profile slots, set custom target temperatures, and toggle stealth mode.
 - 🧵 **Thread-Safe & GUI Ready**: Includes `ThreadedPuffcoClient` for effortless integration with synchronous scripts, desktop GUIs (Tkinter, PyQt), and macOS menu bar widgets (`rumps`).
 - 🔍 **Auto-Discovery**: Automatic scanning and filtering for nearby Puffco hardware based on manufacturer OUI prefixes and Lorax service UUIDs.
-- 🛠️ **Built-in CLI**: Terminal utilities (`puffco-ble scan`, `puffco-ble monitor`, `puffco-ble sesh`) ready out of the box.
+- 🛠️ **Built-in CLI**: Terminal utilities (`puffco-py scan`, `puffco-py monitor`, `puffco-py sesh`) ready out of the box.
 
 ---
 
 ## 💡 Comparison & Advancements (vs. `puffcoble`)
 
-We acknowledge the earlier exploratory work of [Fr0st3h / PuffcoBLE](https://github.com/Fr0st3h/PuffcoBLE) (`puffcoble`), which demonstrated basic BLE reads. `puffco-ble` was independently created from scratch to provide a modern, production-grade SDK and real-time telemetry engine:
+We acknowledge the earlier exploratory work of [Fr0st3h / PuffcoBLE](https://github.com/Fr0st3h/PuffcoBLE) (`puffcoble`), which demonstrated basic BLE reads. `puffco-py` was independently created from scratch to provide a modern, production-grade SDK and real-time telemetry engine:
 
-- **Reactive Telemetry Engine**: Rather than issuing manual one-shot reads, `puffco-ble` continuously streams live bowl temperature, session countdowns, and battery state via an adaptive background loop with event-driven Observer listeners (`add_telemetry_listener`, `add_state_listener`).
+- **Reactive Telemetry Engine**: Rather than issuing manual one-shot reads, `puffco-py` continuously streams live bowl temperature, session countdowns, and battery state via an adaptive background loop with event-driven Observer listeners (`add_telemetry_listener`, `add_state_listener`).
 - **Strongly-Typed Domain Models**: Built on rich dataclasses (`PuffcoTelemetry`, `PuffcoDeviceInfo`) and enums (`DeviceState`, `ChamberType`) with automatic Fahrenheit/Celsius conversions, replacing raw untyped primitives.
 - **Threaded GUI Bridge**: Includes `PuffcoThreadedClient` running the event loop on an isolated daemon thread, making it seamless to integrate with Tkinter, PyQt, PySide, and macOS menu bar widgets without fighting asyncio event loop threading issues.
-- **Interactive Terminal Suite**: Built-in CLI with live terminal dashboards (`puffco-ble monitor`) powered by `rich`, device discovery (`puffco-ble scan`), diagnostics (`puffco-ble info`), and session controls.
+- **Interactive Terminal Suite**: Built-in CLI with live terminal dashboards (`puffco-py monitor`) powered by `rich`, device discovery (`puffco-py scan`), diagnostics (`puffco-py info`), and session controls.
 - **Broader Python Compatibility**: Supports **Python 3.9+** (compared to 3.11+).
 - **Automated Test Suite**: Full offline unit test suite with mock packet framing, sequence serialization, and SHA-256 challenge authentication verification.
 
@@ -38,8 +38,8 @@ We acknowledge the earlier exploratory work of [Fr0st3h / PuffcoBLE](https://git
 Install from source or local checkout:
 
 ```bash
-git clone https://github.com/SoyMilkIsOk/puffco-ble.git
-cd puffco-ble
+git clone https://github.com/SoyMilkIsOk/puffco-py.git
+cd puffco-py
 pip install .
 ```
 
@@ -57,7 +57,7 @@ pip install ".[cli,gui]"
 
 ```python
 import asyncio
-from puffco_ble import PuffcoClient
+from puffco_py import PuffcoClient
 
 async def main():
     # Automatically scans for and connects to the nearest Puffco device
@@ -75,6 +75,8 @@ async def main():
         # Keep streaming for 15 seconds
         await asyncio.sleep(15)
 
+        client.remove_telemetry_listener(on_update)
+
 asyncio.run(main())
 ```
 
@@ -84,7 +86,7 @@ If you are building a desktop GUI (Tkinter, PyQt, PySide, wxPython) or a synchro
 
 ```python
 import time
-from puffco_ble import ThreadedPuffcoClient
+from puffco_py import ThreadedPuffcoClient
 
 client = ThreadedPuffcoClient()
 
@@ -111,32 +113,32 @@ client.stop()
 
 ## 🖥️ Command-Line Interface (CLI)
 
-The package installs a standalone terminal tool `puffco-ble`:
+The package installs a standalone terminal tool `puffco-py`:
 
 ```bash
 # 1. Scan for nearby devices (5s timeout)
-puffco-ble scan
+puffco-py scan
 
 # 2. Stream a live terminal telemetry HUD (Ctrl+C to exit)
-puffco-ble monitor
+puffco-py monitor
 
 # 3. View hardware serial, firmware version, lifetime dabs, and heat profiles
-puffco-ble info
+puffco-py info
 
 # 4. Trigger or abort heat sessions
-puffco-ble sesh start
-puffco-ble sesh boost
-puffco-ble sesh stop
+puffco-py sesh start
+puffco-py sesh boost
+puffco-py sesh stop
 ```
 
 ### CLI Command Reference
 
 | Command | Arguments | Description |
 | :--- | :--- | :--- |
-| `puffco-ble scan` | `-t, --timeout <sec>` *(default: 5.0)* | Scans BLE advertisements and prints discovered devices with MAC addresses and RSSI signal strength. |
-| `puffco-ble monitor` | `--mac <MAC/UUID>` *(optional)* | Live streams bowl temperature, target temp, battery %, chamber type, and session state. |
-| `puffco-ble info` | `--mac <MAC/UUID>` *(optional)* | Connects and dumps hardware serial, firmware version, lifetime dab count, stealth status, and all 4 profile slot configurations. |
-| `puffco-ble sesh <action>` | `start`, `stop`, or `boost`<br>`--mac <MAC/UUID>` *(optional)* | Sends immediate heating commands to the connected device. |
+| `puffco-py scan` | `-t, --timeout <sec>` *(default: 5.0)* | Scans BLE advertisements and prints discovered devices with MAC addresses and RSSI signal strength. |
+| `puffco-py monitor` | `--mac <MAC/UUID>` *(optional)* | Live streams bowl temperature, target temp, battery %, chamber type, and session state. |
+| `puffco-py info` | `--mac <MAC/UUID>` *(optional)* | Connects and dumps hardware serial, firmware version, lifetime dab count, stealth status, and all 4 profile slot configurations. |
+| `puffco-py sesh <action>` | `start`, `stop`, or `boost`<br>`--mac <MAC/UUID>` *(optional)* | Sends immediate heating commands to the connected device. |
 
 > [!TIP]
 > If you have multiple devices or a crowded room, supply `--mac <address>` to target a specific unit directly.
@@ -282,4 +284,4 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## ⚖️ Legal Disclaimer
 
-`puffco-ble` is an independent, community-developed open-source reverse-engineering project. It is **NOT** affiliated with, authorized, maintained, sponsored, or endorsed by **Puff Corp.** (registered in Delaware) or any of its affiliates. All trademarks—including Puffco, Peak, Peak Pro, Proxy, 3D Chamber, and 3DXL—are registered trademarks of Puff Corp. Nominative use of these names is strictly for identification and interoperability purposes under Fair Use.
+`puffco-py` is an independent, community-developed open-source reverse-engineering project. It is **NOT** affiliated with, authorized, maintained, sponsored, or endorsed by **Puff Corp.** (registered in Delaware) or any of its affiliates. All trademarks—including Puffco, Peak, Peak Pro, Proxy, 3D Chamber, and 3DXL—are registered trademarks of Puff Corp. Nominative use of these names is strictly for identification and interoperability purposes under Fair Use.

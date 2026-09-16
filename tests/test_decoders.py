@@ -5,7 +5,7 @@ Unit tests for data decoders (temperature, battery, and dab metrics).
 import struct
 import unittest
 
-from puffco_ble.protocol import (
+from puffco_py.protocol import (
     c_to_f,
     f_to_c,
     parse_battery,

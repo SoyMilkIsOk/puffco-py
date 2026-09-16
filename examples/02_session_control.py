@@ -7,7 +7,7 @@ and toggle stealth mode.
 
 import asyncio
 import time
-from puffco_ble import PuffcoClient, OperatingState
+from puffco_py import PuffcoClient, OperatingState
 
 
 async def main():

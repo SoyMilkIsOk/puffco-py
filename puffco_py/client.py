@@ -62,7 +62,7 @@ from .protocol import (
     unpack_lorax_reply,
 )
 
-logger = logging.getLogger("puffco_ble.client")
+logger = logging.getLogger("puffco_py.client")
 
 
 class PuffcoClient:

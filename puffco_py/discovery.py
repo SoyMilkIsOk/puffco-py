@@ -22,7 +22,7 @@ from .constants import (
     PUFFCO_NAME_KEYWORDS,
 )
 
-logger = logging.getLogger("puffco_ble.discovery")
+logger = logging.getLogger("puffco_py.discovery")
 
 
 @dataclass

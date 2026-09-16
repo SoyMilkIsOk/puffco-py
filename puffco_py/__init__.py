@@ -1,5 +1,5 @@
 """
-puffco-ble: Modern Python BLE client and telemetry engine for Puffco devices.
+puffco-py: Modern Python BLE client and telemetry engine for Puffco devices.
 """
 
 from .client import PuffcoClient

@@ -1,4 +1,4 @@
-# 🌐 puffco-ble Netlify Static Site Folder
+# 🌐 puffco-py Netlify Static Site Folder
 
 This directory is completely self-contained and ready for **instant drag-and-drop deployment on Netlify**. Zero build tools or npm dependencies are required.
 
@@ -13,7 +13,7 @@ This directory is completely self-contained and ready for **instant drag-and-dro
 4. Go to **Site Configuration > Change site name** or add your custom domain.
 
 ### Option 2: Continuous Git Deployment
-1. Link your GitHub repository `SoyMilkIsOk/puffco-ble` in Netlify.
+1. Link your GitHub repository `SoyMilkIsOk/puffco-py` in Netlify.
 2. In build settings:
    - **Base directory:** *(leave blank)*
    - **Build command:** *(leave blank)*
@@ -36,5 +36,5 @@ This directory is completely self-contained and ready for **instant drag-and-dro
 - In [`index.html`](index.html) and [`docs.html`](docs.html), search for `buymeacoffee.com/soymilk` and replace `soymilk` with your username.
 
 ### 3. Custom Domain
-- In Netlify, go to **Domain management > Add custom domain** (e.g., `puffco.dev` or `puffco-ble.com`).
+- In Netlify, go to **Domain management > Add custom domain** (e.g., `puffco.dev` or `puffco-py.com`).
 - Netlify provisions automatic free SSL/TLS certificates via Let's Encrypt.

@@ -5,7 +5,7 @@ Displays live bowl temperature and battery percentage in the macOS menu bar,
 with quick menu shortcuts to trigger heat sessions and switch profiles.
 
 Requires:
-    pip install rumps puffco-ble
+    pip install rumps puffco-py
 """
 
 import sys
@@ -16,7 +16,7 @@ except ImportError:
     print("This example requires 'rumps'. Install with: pip install rumps")
     sys.exit(1)
 
-from puffco_ble import OperatingState, ThreadedPuffcoClient
+from puffco_py import OperatingState, ThreadedPuffcoClient
 
 
 class PuffcoMenuBarApp(rumps.App):

@@ -1,4 +1,4 @@
-# Netlify Clean URL Redirects for puffco-ble static site
+# Netlify Clean URL Redirects for puffco-py static site
 /docs      /docs.html   200
 /legal     /legal.html  200
 

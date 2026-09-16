@@ -12,7 +12,7 @@ from typing import Any, Callable, List, Optional
 from .client import PuffcoClient
 from .models import OperatingState, PuffcoTelemetry
 
-logger = logging.getLogger("puffco_ble.threaded")
+logger = logging.getLogger("puffco_py.threaded")
 
 
 class ThreadedPuffcoClient:

@@ -1,4 +1,4 @@
-# Netlify Deployment Configuration for puffco-ble
+# Netlify Deployment Configuration for puffco-py
 
 [build]
   publish = "."

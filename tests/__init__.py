@@ -1,1 +1,1 @@
-"""Unit tests for puffco-ble."""
+"""Unit tests for puffco-py."""

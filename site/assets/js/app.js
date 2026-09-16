@@ -1,5 +1,5 @@
 /**
- * puffco-ble Site Logic (app.js)
+ * puffco-py Site Logic (app.js)
  * Copy handlers, mobile nav, docs sidebar auto-highlighting
  */
 

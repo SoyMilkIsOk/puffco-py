@@ -1,5 +1,5 @@
 """
-Command-line interface (CLI) for puffco-ble.
+Command-line interface (CLI) for puffco-py.
 """
 
 import argparse
@@ -11,8 +11,8 @@ try:
     from .client import PuffcoClient
     from .discovery import scan_puffco_devices
 except ImportError:
-    from puffco_ble.client import PuffcoClient
-    from puffco_ble.discovery import scan_puffco_devices
+    from puffco_py.client import PuffcoClient
+    from puffco_py.discovery import scan_puffco_devices
 
 
 def cmd_scan(args):
@@ -102,7 +102,7 @@ def cmd_sesh(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="puffco-ble",
+        prog="puffco-py",
         description="Puffco Peak Pro & Proxy BLE Command Line Tool",
     )
     subparsers = parser.add_subparsers(dest="command", help="Command to run")

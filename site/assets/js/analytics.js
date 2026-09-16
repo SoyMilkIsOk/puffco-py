@@ -1,6 +1,6 @@
 /**
  * Google Analytics 4 (GA4) & Cookie Consent Management
- * puffco-ble Static Site Suite
+ * puffco-py Static Site Suite
  *
  * INSTRUCTIONS:
  * 1. Replace 'G-XXXXXXXXXX' below with your actual Google Analytics Measurement ID.

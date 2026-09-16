@@ -5,14 +5,14 @@ Unit tests for Lorax packet framing and SHA-256 challenge-response authenticatio
 import hashlib
 import unittest
 
-from puffco_ble.constants import (
+from puffco_py.constants import (
     LORAX_MASTER_HANDSHAKE_KEY,
     LORAX_OP_GET_ACCESS_SEED,
     LORAX_OP_READ_SHORT,
     LORAX_OP_UNLOCK_ACCESS,
     LORAX_OP_WRITE_SHORT,
 )
-from puffco_ble.protocol import (
+from puffco_py.protocol import (
     calculate_lorax_auth_token,
     pack_lorax_cmd,
     pack_lorax_read_short,

@@ -6,7 +6,7 @@ battery percentage, and session countdown in real-time.
 """
 
 import asyncio
-from puffco_ble import PuffcoClient
+from puffco_py import PuffcoClient
 
 
 async def main():
