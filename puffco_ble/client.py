@@ -35,6 +35,8 @@ from .constants import (
     PATH_PROFILE_TIME_PREFIX,
     PATH_STATE_ID,
     PATH_STEALTH_MODE,
+    PATH_LANTERN_CMD,
+    PATH_LED_BRIGHTNESS,
     PATH_TIME_ELAPSED,
     PATH_TIME_TOTAL,
     PUFFCO_LORAX_CHAR_CMD,
@@ -489,3 +491,55 @@ class PuffcoClient:
             self.telemetry.stealth_mode = enabled
             self._notify_listeners()
         return success
+
+    async def start_lantern(self) -> bool:
+        """Activates continuous ambient lantern lighting mode."""
+        logger.info("Starting lantern mode...")
+        return await self.write_path(PATH_LANTERN_CMD, bytes([0x01]))
+
+    async def stop_lantern(self) -> bool:
+        """Deactivates lantern lighting mode."""
+        logger.info("Stopping lantern mode...")
+        return await self.write_path(PATH_LANTERN_CMD, bytes([0x00]))
+
+    async def set_led_brightness(
+        self,
+        base: int = 255,
+        mid: int = 255,
+        glass: int = 255,
+        logo: int = 255,
+    ) -> bool:
+        """
+        Sets brightness (0..255) for all 4 LED hardware zones:
+        base, mid chamber, glass stem, and logo.
+        """
+        logger.info(f"Setting LED brightness (base={base}, mid={mid}, glass={glass}, logo={logo})")
+        payload = bytes([
+            max(0, min(255, int(base))),
+            max(0, min(255, int(mid))),
+            max(0, min(255, int(glass))),
+            max(0, min(255, int(logo))),
+        ])
+        return await self.write_path(PATH_LED_BRIGHTNESS, payload)
+
+    async def enter_sleep_mode(self) -> bool:
+        """Places the device into ultra-low-power sleep state."""
+        logger.info("Entering sleep mode...")
+        return await self.write_path(PATH_MODE_CONTROL, bytes([0x0A]))
+
+    async def power_off(self) -> bool:
+        """Sends master power down command to turn off hardware completely."""
+        logger.info("Powering off device...")
+        return await self.write_path(PATH_MODE_CONTROL, bytes([0x0B]))
+
+    async def get_battery_level(self) -> int:
+        """Direct one-shot query for battery SOC percentage (0..100)."""
+        data = await self.read_path(PATH_BATTERY_SOC)
+        return int(data[0]) if data else int(self.telemetry.battery_pct)
+
+    async def get_total_dabs(self) -> int:
+        """Direct one-shot query for lifetime total odometer count."""
+        data = await self.read_path(PATH_ODOMETER_DABS)
+        if data and len(data) >= 4:
+            return struct.unpack("<I", data[:4])[0]
+        return self.telemetry.total_dabs

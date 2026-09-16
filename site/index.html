@@ -3,66 +3,57 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>puffco-ble | Modern Python BLE & Telemetry Engine for Puffco Devices</title>
-  <meta name="description" content="A standalone, modern, asynchronous Python BLE client and real-time telemetry engine for Puffco Peak Pro and Proxy smart vaporizers.">
-  <meta name="keywords" content="puffco, peak pro, proxy, ble, bluetooth low energy, lorax vfs, reverse engineering, python, iot">
+  <title>puffco-ble — Python BLE Client for Puffco Devices</title>
+  <meta name="description" content="A standalone, asynchronous Python BLE client and real-time telemetry engine for Puffco Peak Pro and Proxy vaporizers.">
 
-  <!-- Open Graph / Social Sharing -->
+  <!-- Open Graph -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="puffco-ble | Modern Python BLE & Telemetry Engine">
-  <meta property="og:description" content="Sub-100ms real-time bowl temperature streaming, full session controls, and Lorax VFS protocol implementation.">
-  <meta property="og:image" content="assets/img/logo.svg">
+  <meta property="og:title" content="puffco-ble — Python BLE Client for Puffco Devices">
+  <meta property="og:description" content="Async Python library for Puffco Peak Pro and Proxy Bluetooth Low Energy telemetry and session control.">
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
+  <link rel="icon" type="image/svg+xml" href="assets/img/puffco-ble.svg">
 
-  <!-- Stylesheets -->
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HL07GGMKE1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-HL07GGMKE1');
+  </script>
+
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="assets/css/main.css">
-  <link rel="stylesheet" href="assets/css/terminal.css">
 </head>
 <body>
 
-  <!-- ========================================================================
-       SITE HEADER / NAVIGATION
-       ======================================================================== -->
+  <!-- HEADER -->
   <header class="site-header">
     <div class="container nav-wrap">
       <a href="index.html" class="brand-logo" id="nav-brand">
-        <img src="assets/img/logo.svg" alt="puffco-ble logo" width="38" height="38">
-        <span>puffco<span class="gradient-text">-ble</span></span>
-        <span class="brand-badge">v0.1.0</span>
+        <img src="assets/img/puffco-ble.svg" alt="puffco-ble" width="17" height="28">
+        <span>puffco<span class="accent">-ble</span></span>
       </a>
 
       <ul class="nav-links" id="main-nav-links">
-        <li><a href="#features" class="nav-link">Features</a></li>
-        <li><a href="#terminal-demo" class="nav-link">Terminal CLI</a></li>
-        <li><a href="#simulator-demo" class="nav-link">Live Simulator</a></li>
-        <li><a href="#protocol" class="nav-link">Protocol</a></li>
-        <li><a href="docs.html" class="nav-link">Documentation</a></li>
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="docs.html" class="nav-link">Docs</a></li>
         <li><a href="legal.html" class="nav-link">Legal</a></li>
       </ul>
 
       <div class="nav-actions">
-        <!-- Buy Me A Coffee Header Button -->
-        <a href="https://buymeacoffee.com/soymilk" target="_blank" rel="noopener noreferrer" class="btn-coffee" id="header-btn-coffee">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
-          </svg>
-          <span>Buy Me a Coffee</span>
-        </a>
-
-        <!-- GitHub Repository Link -->
-        <a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="btn btn-secondary btn-icon" id="header-btn-github" title="View on GitHub">
+        <a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="btn-github" title="View on GitHub">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
         </a>
 
-        <!-- Mobile Menu Hamburger -->
-        <button class="mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="3" y1="12" x2="21" y2="12"></line>
+        <button class="mobile-toggle" aria-label="Toggle navigation" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
             <line x1="3" y1="18" x2="21" y2="18"></line>
           </svg>
         </button>
@@ -70,458 +61,104 @@
     </div>
   </header>
 
-  <!-- ========================================================================
-       HERO SECTION
-       ======================================================================== -->
+  <!-- HERO -->
   <main>
-    <section class="hero" id="hero">
+    <section class="hero">
       <div class="container">
-        <div class="hero-tag">
-          <span class="pulse-dot"></span>
-          <span>BLUETOOTH LOW ENERGY • LORAX VFS PROTOCOL • PYTHON 3.9+</span>
+        <div class="hero-logo-wrap">
+          <img src="assets/img/puffco-ble.svg" alt="puffco-ble logo" class="hero-logo" width="49" height="84">
+        </div>
+
+        <div class="hero-eyebrow">
+          <span>Python 3.9+ &bull; BLE &bull; Lorax VFS &bull; MIT License</span>
         </div>
 
         <h1 class="hero-title">
-          Hack Your Clouds.<br>
-          <span class="gradient-text">Puffco Telemetry &amp; Control</span>
+          puffco<span class="accent">-ble</span>
         </h1>
 
         <p class="hero-subtitle">
-          A standalone, modern, asynchronous Python client and real-time telemetry engine for 
-          <strong>Puffco Peak Pro</strong> and <strong>Puffco Proxy</strong> smart vaporizers over BLE.
+          A standalone, asynchronous Python client and real-time telemetry engine for
+          <strong>Puffco Peak Pro</strong> and <strong>Puffco Proxy</strong> vaporizers over Bluetooth Low Energy.
         </p>
 
-        <!-- Quick Install Snippet -->
-        <div class="hero-ctas">
-          <div class="install-badge-box">
-            <span class="install-cmd"><span class="prompt-symbol">$</span>pip install puffco-ble</span>
-            <button class="btn-copy-install" data-copy="pip install puffco-ble" title="Copy pip command">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
-              </svg>
-            </button>
-          </div>
+        <!-- Install snippet -->
+        <div class="install-box">
+          <span class="install-cmd"><span class="prompt">$</span>pip install puffco-ble</span>
+          <button class="btn-copy" data-copy="pip install puffco-ble" title="Copy to clipboard" id="hero-copy-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+          </button>
+        </div>
 
+        <!-- CTA -->
+        <div class="hero-actions">
           <a href="docs.html" class="btn btn-primary" id="hero-btn-docs">
-            <span>Explore Documentation</span>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            Read the Docs
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <line x1="5" y1="12" x2="19" y2="12"></line>
               <polyline points="12 5 19 12 12 19"></polyline>
             </svg>
           </a>
-
-          <a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" id="hero-btn-github-cta">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="btn btn-ghost" id="hero-btn-github">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
             </svg>
-            <span>GitHub Repository</span>
+            GitHub
           </a>
         </div>
 
-        <!-- Hardware Compatibility Strip -->
+        <!-- Compatibility -->
         <div class="compat-strip">
-          <div class="compat-item">
-            <span>✔</span> Peak Pro V2 (3DXL &amp; Standard)
-          </div>
-          <div class="compat-item">
-            <span>✔</span> Peak Pro V1
-          </div>
-          <div class="compat-item">
-            <span>✔</span> Puffco Proxy
-          </div>
-          <div class="compat-item">
-            <span>✔</span> macOS • Linux • Windows • Raspberry Pi
-          </div>
+          <div class="compat-item"><span class="check">✓</span> Peak Pro V2</div>
+          <div class="compat-item"><span class="check">✓</span> Peak Pro V1</div>
+          <div class="compat-item"><span class="check">✓</span> Puffco Proxy</div>
+          <div class="compat-item"><span class="check">✓</span> macOS / Linux / Windows / RPi</div>
         </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         INTERACTIVE CLI TERMINAL EMULATOR
-         ======================================================================== -->
-    <section class="container" id="terminal-demo">
-      <div class="section-title-wrap">
-        <span class="section-eyebrow">Terminal Experience</span>
-        <h2 class="section-title">Standalone CLI Terminal Out-of-the-Box</h2>
-        <p class="section-desc">
-          Try the terminal below! Click any command button or type directly into the prompt to test discovery, telemetry streaming, and heating controls.
-        </p>
-      </div>
-
-      <div class="terminal-wrapper">
-        <div class="terminal-window">
-          <!-- Terminal Title Bar -->
-          <div class="terminal-header">
-            <div class="terminal-controls">
-              <span class="t-dot t-dot-red"></span>
-              <span class="t-dot t-dot-yellow"></span>
-              <span class="t-dot t-dot-green"></span>
-            </div>
-            <div class="terminal-title">
-              <span>puffco-ble-cli — bash — 80×24</span>
-            </div>
-            <div class="terminal-status-badge">
-              <span class="pulse-dot" style="width:6px; height:6px;"></span>
-              <span>BLE READY</span>
-            </div>
-          </div>
-
-          <!-- Quick Action Buttons Toolbar -->
-          <div class="terminal-toolbar">
-            <span class="toolbar-label">Quick Run:</span>
-            <button class="btn-terminal-cmd" data-cmd="puffco-ble scan">puffco-ble scan</button>
-            <button class="btn-terminal-cmd" data-cmd="puffco-ble monitor">puffco-ble monitor</button>
-            <button class="btn-terminal-cmd" data-cmd="puffco-ble info">puffco-ble info</button>
-            <button class="btn-terminal-cmd" data-cmd="puffco-ble sesh start">puffco-ble sesh start</button>
-            <button class="btn-terminal-cmd" data-cmd="clear">clear</button>
-          </div>
-
-          <!-- Terminal Screen Body -->
-          <div class="terminal-body" id="terminal-screen">
-            <div class="term-line"><span class="term-cyan">puffco-ble</span> <span class="term-dim">v0.1.0 — Python BLE telemetry and control engine</span></div>
-            <div class="term-line"><span class="term-dim">Type <span class="term-white">'help'</span> or click the buttons above to interact.</span></div>
-            <div class="term-line prompt-line">
-              <span class="prompt-host">soymilk@puffco-station</span>:<span class="prompt-path">~/puffco-ble</span>$ <span class="term-dim">Ready for Bluetooth commands...</span>
-            </div>
-          </div>
-
-          <!-- Interactive Input Line -->
-          <div class="terminal-toolbar" style="border-top: 1px solid rgba(255,255,255,0.06); border-bottom: none; background: #07080d;">
-            <div class="terminal-input-row" style="width: 100%;">
-              <span class="terminal-prompt-label">&gt;</span>
-              <input type="text" class="terminal-input" id="terminal-cli-input" placeholder="type 'puffco-ble scan' or 'help' and press Enter..." autocomplete="off" spellcheck="false">
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         INTERACTIVE DEVICE SIMULATOR & TELEMETRY
-         ======================================================================== -->
-    <section class="container" id="simulator-demo">
-      <div class="section-title-wrap">
-        <span class="section-eyebrow">Live Telemetry Engine</span>
-        <h2 class="section-title">Interactive Peak Pro Device Simulator</h2>
-        <p class="section-desc">
-          Experience sub-100ms real-time bowl temperature streaming, chamber detection, and live session state transitions.
-        </p>
-      </div>
-
-      <div class="simulator-card">
-        <div class="simulator-grid">
-          <!-- Dial Gauge -->
-          <div class="dial-container">
-            <div class="device-dial" id="device-dial">
-              <div class="mood-ring"></div>
-              <div class="dial-temp">
-                <span id="dial-temp-value">74.0</span>
-                <span>°F</span>
-              </div>
-              <div class="dial-state" id="dial-state-text">IDLE</div>
-              <div class="dial-target">Target: <span id="dial-target-value">510°F</span></div>
-            </div>
-          </div>
-
-          <!-- Controls & Telemetry Data -->
-          <div class="telemetry-controls-box">
-            <!-- Stat Chips -->
-            <div class="telemetry-stat-row">
-              <div class="stat-chip">
-                <div class="stat-label">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 13v-2"/></svg>
-                  Battery
-                </div>
-                <div class="stat-value" id="dial-battery-value">84%</div>
-              </div>
-
-              <div class="stat-chip">
-                <div class="stat-label">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-                  Timer
-                </div>
-                <div class="stat-value" id="dial-time-value">--</div>
-              </div>
-
-              <div class="stat-chip">
-                <div class="stat-label">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                  Lifetime Dabs
-                </div>
-                <div class="stat-value" id="dial-dabs-value">1,420</div>
-              </div>
-            </div>
-
-            <!-- Profile Selector -->
-            <div class="profiles-selector">
-              <span class="profiles-label">Active Heat Profile:</span>
-              <div class="profiles-pills">
-                <div class="profile-pill" data-slot="0">
-                  <span class="profile-name">Daily</span>
-                  <span class="profile-temp">490°F / 45s</span>
-                </div>
-                <div class="profile-pill active" data-slot="1">
-                  <span class="profile-name">Flavor</span>
-                  <span class="profile-temp">510°F / 40s</span>
-                </div>
-                <div class="profile-pill" data-slot="2">
-                  <span class="profile-name">Cloud</span>
-                  <span class="profile-temp">535°F / 40s</span>
-                </div>
-                <div class="profile-pill" data-slot="3">
-                  <span class="profile-name">3DXL</span>
-                  <span class="profile-temp">565°F / 35s</span>
-                </div>
-              </div>
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="action-buttons-wrap">
-              <button class="btn btn-primary" id="sim-btn-start">
-                <span>🔥 Start Sesh</span>
-              </button>
-
-              <button class="btn btn-outline-cyan" id="sim-btn-boost" disabled>
-                <span>⚡ Boost (+15s / +10°F)</span>
-              </button>
-
-              <button class="btn btn-secondary" id="sim-btn-stop">
-                <span>🛑 Abort</span>
-              </button>
-
-              <button class="btn btn-secondary" id="sim-btn-stealth">
-                <span>Lights: ON</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         KEY FEATURES GRID
-         ======================================================================== -->
-    <section class="features-section" id="features">
-      <div class="container">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Engineered for Performance</span>
-          <h2 class="section-title">Modern Architecture, Zero Hassle</h2>
-          <p class="section-desc">
-            Everything you need to integrate Puffco devices into Python apps, desktop dashboards, and Home Assistant.
-          </p>
-        </div>
-
-        <div class="features-grid">
-          <!-- Feature 1 -->
-          <div class="feature-card">
-            <div class="feature-icon-box">⚡</div>
-            <h3 class="feature-title">Lorax VFS Protocol</h3>
-            <p class="feature-desc">
-              Native support for Puffco firmware using Lorax Virtual File System sequence multiplexing and SHA-256 challenge-response authentication.
-            </p>
-          </div>
-
-          <!-- Feature 2 -->
-          <div class="feature-card">
-            <div class="feature-icon-box">⏱️</div>
-            <h3 class="feature-title">Sub-100ms Streaming</h3>
-            <p class="feature-desc">
-              Adaptive polling engine streams ~16 FPS (60ms) during active heating and throttles to power-saving mode (250ms) when idle.
-            </p>
-          </div>
-
-          <!-- Feature 3 -->
-          <div class="feature-card">
-            <div class="feature-icon-box">🧵</div>
-            <h3 class="feature-title">Thread-Safe GUI Ready</h3>
-            <p class="feature-desc">
-              Includes <code>ThreadedPuffcoClient</code> to power synchronous UI toolkits (Tkinter, PyQt, PySide) without blocking dispatch threads.
-            </p>
-          </div>
-
-          <!-- Feature 4 -->
-          <div class="feature-card">
-            <div class="feature-icon-box">🍏</div>
-            <h3 class="feature-title">macOS Status Bar Widget</h3>
-            <p class="feature-desc">
-              Comes with a ready-to-run native menu bar app powered by <code>rumps</code>, showing live temps and one-click session triggers.
-            </p>
-          </div>
-
-          <!-- Feature 5 -->
-          <div class="feature-card">
-            <div class="feature-icon-box">🔍</div>
-            <h3 class="feature-title">Auto-Discovery Engine</h3>
-            <p class="feature-desc">
-              Scans BLE advertisements and filters nearest devices by manufacturer OUI and Lorax GATT UUIDs automatically.
-            </p>
-          </div>
-
-          <!-- Feature 6 -->
-          <div class="feature-card">
-            <div class="feature-icon-box">📊</div>
-            <h3 class="feature-title">Hardware Telemetry Model</h3>
-            <p class="feature-desc">
-              Clean dataclass models for 3D/3DXL chamber detection, battery %, charging state, lifetime dabs odometer, and saved profiles.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         REVERSE-ENGINEERED PROTOCOL SECTION
-         ======================================================================== -->
-    <section class="protocol-section" id="protocol">
-      <div class="container">
-        <div class="section-title-wrap">
-          <span class="section-eyebrow">Under The Hood</span>
-          <h2 class="section-title">Lorax VFS Handshake Flow</h2>
-          <p class="section-desc">
-            How <code>puffco-ble</code> handles authentication and bidirectional telemetry over Bluetooth Low Energy.
-          </p>
-        </div>
-
-        <div class="protocol-card">
-          <div class="protocol-steps-grid">
-            <div class="step-card">
-              <span class="step-number">STEP 01</span>
-              <h4 class="step-name">GATT Connection</h4>
-              <p class="step-detail">Bleak discovers device with Lorax service UUID and establishes an MTU-negotiated link.</p>
-              <span class="step-code">e276967f-ea8a-478a...</span>
-            </div>
-
-            <div class="step-card">
-              <span class="step-number">STEP 02</span>
-              <h4 class="step-name">Seed Challenge</h4>
-              <p class="step-detail">Client sends Opcode <code>0x00</code> to request a 16-byte cryptographically secure random access seed.</p>
-              <span class="step-code">GET_ACCESS_SEED (0x00)</span>
-            </div>
-
-            <div class="step-card">
-              <span class="step-number">STEP 03</span>
-              <h4 class="step-name">SHA-256 Auth Token</h4>
-              <p class="step-detail">Client calculates <code>SHA256(MasterKey + Seed)[:16]</code> and transmits Opcode <code>0x01</code> to unlock the VFS.</p>
-              <span class="step-code">UNLOCK_ACCESS (0x01)</span>
-            </div>
-
-            <div class="step-card">
-              <span class="step-number">STEP 04</span>
-              <h4 class="step-name">Stream Telemetry</h4>
-              <p class="step-detail">Client polls Lorax VFS paths for live bowl temperature, state ID, and battery level.</p>
-              <span class="step-code">/p/app/htr/temp</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ========================================================================
-         SPONSOR / BUY ME A COFFEE BANNER
-         ======================================================================== -->
-    <section class="container">
-      <div class="sponsor-banner">
-        <h3 class="sponsor-title">Support Reverse-Engineering &amp; Open Source</h3>
-        <p class="sponsor-desc">
-          <code>puffco-ble</code> is an independent, community-driven project created to bring open hardware telemetry to hackers, makers, and enthusiasts. If you find this library useful, consider fueling late-night debugging sessions!
-        </p>
-        <a href="https://buymeacoffee.com/soymilk" target="_blank" rel="noopener noreferrer" class="btn btn-coffee" style="font-size: 1rem; padding: 12px 28px;" id="banner-btn-coffee">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
-          </svg>
-          <span>Buy Me a Coffee</span>
-        </a>
       </div>
     </section>
   </main>
 
-  <!-- ========================================================================
-       SITE FOOTER
-       ======================================================================== -->
+  <!-- FOOTER -->
   <footer class="site-footer">
     <div class="container">
-      <div class="footer-grid">
-        <!-- Col 1: Brand -->
-        <div class="footer-brand">
-          <a href="index.html" class="brand-logo">
-            <img src="assets/img/logo.svg" alt="puffco-ble logo" width="30" height="30">
-            <span>puffco<span class="gradient-text">-ble</span></span>
+      <div class="footer-content">
+        <div class="footer-left">
+          <div class="footer-copy">&copy; 2024–2026 puffco-ble contributors &bull; MIT License</div>
+          <ul class="footer-links">
+            <li><a href="docs.html" class="footer-link">Documentation</a></li>
+            <li><a href="legal.html" class="footer-link">Legal</a></li>
+            <li><a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a></li>
+            <li><a href="https://pypi.org/project/puffco-ble/" target="_blank" rel="noopener noreferrer" class="footer-link">PyPI</a></li>
+          </ul>
+        </div>
+        <div class="footer-right">
+          <a href="https://buymeacoffee.com/soymilk" target="_blank" rel="noopener noreferrer" class="btn-coffee" id="footer-btn-coffee">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/>
+            </svg>
+            <span>Buy Me a Coffee</span>
           </a>
-          <p>
-            Modern, standalone Python BLE client and real-time telemetry engine for Puffco Peak Pro and Proxy hardware.
-          </p>
-        </div>
-
-        <!-- Col 2: Documentation -->
-        <div>
-          <h4 class="footer-col-title">Documentation</h4>
-          <ul class="footer-links">
-            <li><a href="docs.html#quickstart" class="footer-link">Quickstart</a></li>
-            <li><a href="docs.html#cli-guide" class="footer-link">CLI Reference</a></li>
-            <li><a href="docs.html#python-api" class="footer-link">Python API Reference</a></li>
-            <li><a href="docs.html#protocol-spec" class="footer-link">Lorax VFS Specs</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 3: Resources -->
-        <div>
-          <h4 class="footer-col-title">Resources</h4>
-          <ul class="footer-links">
-            <li><a href="https://github.com/SoyMilkIsOk/puffco-ble" target="_blank" rel="noopener noreferrer" class="footer-link">GitHub Repository</a></li>
-            <li><a href="https://pypi.org/project/puffco-ble/" target="_blank" rel="noopener noreferrer" class="footer-link">PyPI Package</a></li>
-            <li><a href="https://github.com/SoyMilkIsOk/puffco-ble/issues" target="_blank" rel="noopener noreferrer" class="footer-link">Bug Tracker</a></li>
-            <li><a href="https://buymeacoffee.com/soymilk" target="_blank" rel="noopener noreferrer" class="footer-link">Support Developer</a></li>
-          </ul>
-        </div>
-
-        <!-- Col 4: Legal & Privacy -->
-        <div>
-          <h4 class="footer-col-title">Legal</h4>
-          <ul class="footer-links">
-            <li><a href="legal.html#disclaimer" class="footer-link">Trademark Notice</a></li>
-            <li><a href="legal.html#safety" class="footer-link">Safety Warning</a></li>
-            <li><a href="legal.html#license" class="footer-link">MIT License</a></li>
-            <li><a href="legal.html#privacy" class="footer-link">Privacy &amp; Cookies</a></li>
-            <li><a href="#" class="footer-link trigger-cookie-settings">Cookie Settings</a></li>
-          </ul>
         </div>
       </div>
-
-      <!-- Legal Disclaimer Bottom -->
-      <div class="footer-bottom">
-        <div>
-          &copy; 2024–2026 puffco-ble contributors. Released under the MIT License.
-        </div>
-        <div>
-          Built with pure HTML/CSS/JS • Zero build dependencies • Netlify Ready
-        </div>
-      </div>
-      <p class="disclaimer-text">
-        <strong>Disclaimer:</strong> puffco-ble is an independent open-source reverse-engineering project. It is NOT affiliated with, authorized, maintained, sponsored, or endorsed by Concentrate Design Labs Inc. (Puffco) or any of its affiliates. Puffco, Peak, Peak Pro, 3DXL, and Proxy are registered trademarks of their respective owners.
+      <p class="footer-disclaimer">
+        <strong>Disclaimer:</strong> puffco-ble is an independent open-source project. It is NOT affiliated with, authorized, maintained, sponsored, or endorsed by Puff Corp. (registered in Delaware). All trademarks belong to their respective owners.
       </p>
     </div>
   </footer>
 
-  <!-- ========================================================================
-       COOKIE CONSENT MODAL / BANNER (GA4 READY)
-       ======================================================================== -->
+  <!-- Cookie Consent -->
   <div class="cookie-banner" id="cookie-banner" role="dialog" aria-labelledby="cookie-title">
-    <h3 class="cookie-title" id="cookie-title">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--neon-cyan)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-      Telemetry &amp; Analytics Consent
-    </h3>
+    <div class="cookie-title" id="cookie-title">Analytics Consent</div>
     <p class="cookie-desc">
-      We use anonymous analytics (Google Analytics 4) to understand documentation traffic and CLI emulator usage. No personal identifying information is collected. You can accept or decline non-essential cookies.
+      We use anonymous analytics (Google Analytics 4) to understand site traffic. No personal data is collected. You can accept or decline.
     </p>
     <div class="cookie-actions">
-      <button class="btn btn-primary" id="btn-cookie-accept" style="padding: 8px 18px; font-size: 0.85rem;">
-        Accept All
-      </button>
-      <button class="btn btn-secondary" id="btn-cookie-decline" style="padding: 8px 18px; font-size: 0.85rem;">
-        Essential Only
-      </button>
-      <a href="legal.html#privacy" class="footer-link" style="font-size: 0.82rem; margin-left: 6px;">Privacy Policy</a>
+      <button class="btn btn-primary" id="btn-cookie-accept" style="font-size: 0.8rem; padding: 6px 14px;">Accept</button>
+      <button class="btn btn-ghost" id="btn-cookie-decline" style="font-size: 0.8rem; padding: 6px 14px;">Decline</button>
+      <a href="legal.html#privacy" class="footer-link" style="font-size: 0.78rem; margin-left: 4px;">Privacy Policy</a>
     </div>
   </div>
 

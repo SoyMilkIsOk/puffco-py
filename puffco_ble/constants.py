@@ -68,6 +68,8 @@ PATH_ODOMETER_DABS = "/p/app/odom/0/nc"   # Lifetime total dabs count
 PATH_DEVICE_NAME = "/u/sys/name"          # Custom user device name
 PATH_ACTIVE_PROFILE = "/p/app/hcs"        # Active profile index (0..3)
 PATH_STEALTH_MODE = "/u/app/ui/stlm"      # Stealth lighting toggle (0=Off, 1=On)
+PATH_LANTERN_CMD = "/p/app/ltrn/cmd"      # Lantern mode toggle (0=Off, 1=On)
+PATH_LED_BRIGHTNESS = "/u/app/ui/brt"     # LED brightness (4 bytes: base, mid, glass, logo)
 PATH_PROFILE_NAME_PREFIX = "/u/app/hc/{slot}/name"
 PATH_PROFILE_TEMP_PREFIX = "/u/app/hc/{slot}/temp"
 PATH_PROFILE_TIME_PREFIX = "/u/app/hc/{slot}/time"

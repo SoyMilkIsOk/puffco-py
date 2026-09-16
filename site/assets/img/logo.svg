@@ -1,78 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%" fill="none">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="200 14 444 754">
   <defs>
-    <!-- Background glow & chamber gradients -->
-    <radialGradient id="haloGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.35" />
-      <stop offset="60%" stop-color="#ff007f" stop-opacity="0.12" />
-      <stop offset="100%" stop-color="#0c0d14" stop-opacity="0" />
-    </radialGradient>
+    <style>
+      .st0 {
+        fill: #79c0ff;
+      }
 
-    <linearGradient id="neonRing" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00f0ff" />
-      <stop offset="45%" stop-color="#7928ca" />
-      <stop offset="75%" stop-color="#ff007f" />
-      <stop offset="100%" stop-color="#ff8400" />
-    </linearGradient>
+      .st1 {
+        fill: #f0b746;
+      }
 
-    <linearGradient id="innerChamber" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#141824" />
-      <stop offset="100%" stop-color="#242b3d" />
-    </linearGradient>
+      .st2 {
+        fill: #388bfd;
+      }
 
-    <linearGradient id="bleGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00f0ff" />
-      <stop offset="100%" stop-color="#0077ff" />
-    </linearGradient>
-
-    <filter id="bloom" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="12" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-
-    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="6" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
+      .st-rune {
+        fill: #ffffff;
+      }
+    </style>
   </defs>
-
-  <!-- Ambient background bloom -->
-  <circle cx="256" cy="256" r="230" fill="url(#haloGlow)" />
-
-  <!-- Outer Chamber Ring (Puffco Peak Pro Mood Light Ring) -->
-  <circle cx="256" cy="256" r="190" stroke="url(#neonRing)" stroke-width="8" stroke-linecap="round" filter="url(#bloom)" opacity="0.9" />
-  <circle cx="256" cy="256" r="190" stroke="url(#neonRing)" stroke-width="4" stroke-linecap="round" />
-
-  <!-- Segmented Telemetry Arc Accents -->
-  <circle cx="256" cy="256" r="208" stroke="#00f0ff" stroke-width="2" stroke-dasharray="14 36" opacity="0.6" />
-  <circle cx="256" cy="256" r="172" stroke="#ff007f" stroke-width="2" stroke-dasharray="8 24" opacity="0.5" />
-
-  <!-- Inner Chamber Glass / Carb Cap Base -->
-  <circle cx="256" cy="256" r="140" fill="url(#innerChamber)" stroke="#2b3448" stroke-width="3" />
-
-  <!-- Stylized Vapor Wave Path -->
-  <path d="M190 320 C180 270, 230 250, 230 210 C230 170, 205 165, 220 125 C230 95, 260 85, 275 110 C290 135, 265 170, 280 210 C295 250, 335 260, 320 320" 
-        stroke="url(#neonRing)" stroke-width="6" stroke-linecap="round" opacity="0.3" filter="url(#softGlow)" fill="none" />
-
-  <!-- Central Bluetooth BLE Rune + Cloud Fusion -->
-  <!-- Bluetooth Spine and Chevrons -->
-  <g filter="url(#softGlow)">
-    <!-- Vertical Spine -->
-    <line x1="256" y1="140" x2="256" y2="372" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" />
-    
-    <!-- Upper Diamond Chevron -->
-    <polyline points="256,256 316,200 256,144" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-    
-    <!-- Lower Diamond Chevron -->
-    <polyline points="256,256 316,312 256,368" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-    
-    <!-- Upper Left Diagonal Fin -->
-    <line x1="256" y1="200" x2="204" y2="152" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" />
-    
-    <!-- Lower Left Diagonal Fin -->
-    <line x1="256" y1="312" x2="204" y2="360" stroke="url(#bleGlow)" stroke-width="14" stroke-linecap="round" />
+  <g id="EDfEh2">
+    <g>
+      <!-- Vapor / concentrate dab cloud -->
+      <path class="st1" d="M487.4,371.4c-1.7,2-13.6-6.7-15.7-8.3-33.2-25.6-6.5-52.6-14.3-66.3-2.7-4.8-24.2,1.3-36.4-11.5-9.4-9.8-6.3-22.2-10.1-28.2-4.7-7.5-32-9.7-39.8-38.1-8-29.3,11.7-41.8,11.2-52-.3-5.8-14.1-20.5-13.9-38.3.2-19.1,15.8-42.3,33.3-50.2,6.4-2.9,27.7-5.6,29.3-6.9s9-19.2,13.3-24.3c23-27,63.4-30.3,91.6-9.5,6.5,4.8,19.8,24.6,21.2,25.3,8.2,4.2,29.4-7.2,43.7,15,13.6,21,.2,34.4,2.7,43.4.4,1.3,14.8,13.4,18.6,20.1,18.1,32.7,7.5,75.6-26.4,92.6-6.4,3.2-24,6.3-24.9,7.3-1.8,2,10.2,28.8-5.5,51.3-17.6,25.3-77.9,15.8-77.9,57.4s.7,20.4,0,21.2Z"/>
+      <g>
+        <!-- Glass cone interior reflection -->
+        <path class="st0" d="M369.8,453.5c-3.1,5.2-100.6,35.8-113.5,42.4l10.9-212.6c1.9-19.4,26.6-23.9,35.8-7.1l66.7,177.3Z"/>
+        <!-- Glass cone contour & stem -->
+        <path class="st2" d="M407.9,439.7c-.4.7-14.3,5.5-16.4,3.5l-95-293.1c-3.5-3.9-49.8,3.8-54.8,6.6s-4.7,4.4-4.7,9l-2.6,340.3-17.8,7.8,2.7-350.8c.6-9.8,4.5-17.6,13.6-21.9,13.1-6.1,72-19.5,79.7-.2l95.3,298.9Z"/>
+        <g>
+          <!-- Bluetooth rune white backing (ensures rune is crisp & luminous on dark background) -->
+          <path class="st-rune" d="M349.3,534.9c-3.8,9.5,2.9,51.9,0,65-7.9-4.7-24.9-29.3-34.1-25.3-17.5,7.7,29.2,37.7,29.9,43.9.8,6.8-38.4,31.4-33.4,42.8,7.4,16.5,30.1-20.5,37.6-23.2v63.6c0,.5,1.4,3.2,2.3,3.5,3.6,1.2,50-44.2,50.8-47.6,2.4-9.7-32.4-33.2-32.7-37.9-.2-4.1,34.3-32.6,34.3-36.9s-43-44.6-47.2-47.2c-2.1-1.3-5.8-4.8-7.5-.7Z"/>
+          <!-- Base unit & chamber with rune cutout -->
+          <path class="st2" d="M523.3,437.4c-9.9,26.5,17,7.8,20.1,23.7,1.4,7.3-4.6,59.5-7.7,67.3-8,20.2-62.6,46.4-64.4,53.2-3,11.2,28.9,103.3,29.8,125.6.9,21.7-11.9,43.5-32.8,50.5s-186.8,6.5-215.4,3.5-45.2-21.1-47.2-48.5c-2.3-31.3,3.9-137.3,9.7-168.2,2.2-11.7,3.9-14.1,14.1-20.1,22.9-13.4,147.1-61.5,173.9-68.1,14.5-3.6,37,2.4,30.8-16.8-.5-1.5-5.3-2.7-6.7-6-3.1-7.1-4.3-39.1,5.2-42.3,4.5-1.5,87.4-1.5,91.7.1,7.3,2.9,6.9,31.4,5.6,38.3-1.3,6.8-6.2,6.7-6.6,7.8ZM349.3,534.9c-3.8,9.5,2.9,51.9,0,65-7.9-4.7-24.9-29.3-34.1-25.3-17.5,7.7,29.2,37.7,29.9,43.9.8,6.8-38.4,31.4-33.4,42.8,7.4,16.5,30.1-20.5,37.6-23.2v63.6c0,.5,1.4,3.2,2.3,3.5,3.6,1.2,50-44.2,50.8-47.6,2.4-9.7-32.4-33.2-32.7-37.9-.2-4.1,34.3-32.6,34.3-36.9s-43-44.6-47.2-47.2c-2.1-1.3-5.8-4.8-7.5-.7Z"/>
+          <!-- Bluetooth rune inner triangles matching the base -->
+          <g>
+            <path class="st2" d="M364.3,638.1c22.2,14,21.9,21.5,0,35.6v-35.6Z"/>
+            <path class="st2" d="M364.3,599.8v-34.2c23.4,15.4,22.9,18.6,0,34.2Z"/>
+          </g>
+        </g>
+      </g>
+    </g>
   </g>
-
-  <!-- Core Neon Ember (Live Temperature Center) -->
-  <circle cx="256" cy="256" r="10" fill="#ffffff" filter="url(#bloom)" />
-  <circle cx="256" cy="256" r="6" fill="#00f0ff" />
 </svg>

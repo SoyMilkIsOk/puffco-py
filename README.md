@@ -20,6 +20,19 @@ A standalone, modern, asynchronous Python client and real-time telemetry engine 
 
 ---
 
+## 💡 Comparison & Advancements (vs. `puffcoble`)
+
+We acknowledge the earlier exploratory work of [Fr0st3h / PuffcoBLE](https://github.com/Fr0st3h/PuffcoBLE) (`puffcoble`), which demonstrated basic BLE reads. `puffco-ble` was independently created from scratch to provide a modern, production-grade SDK and real-time telemetry engine:
+
+- **Reactive Telemetry Engine**: Rather than issuing manual one-shot reads, `puffco-ble` continuously streams live bowl temperature, session countdowns, and battery state via an adaptive background loop with event-driven Observer listeners (`add_telemetry_listener`, `add_state_listener`).
+- **Strongly-Typed Domain Models**: Built on rich dataclasses (`PuffcoTelemetry`, `PuffcoDeviceInfo`) and enums (`DeviceState`, `ChamberType`) with automatic Fahrenheit/Celsius conversions, replacing raw untyped primitives.
+- **Threaded GUI Bridge**: Includes `PuffcoThreadedClient` running the event loop on an isolated daemon thread, making it seamless to integrate with Tkinter, PyQt, PySide, and macOS menu bar widgets without fighting asyncio event loop threading issues.
+- **Interactive Terminal Suite**: Built-in CLI with live terminal dashboards (`puffco-ble monitor`) powered by `rich`, device discovery (`puffco-ble scan`), diagnostics (`puffco-ble info`), and session controls.
+- **Broader Python Compatibility**: Supports **Python 3.9+** (compared to 3.11+).
+- **Automated Test Suite**: Full offline unit test suite with mock packet framing, sequence serialization, and SHA-256 challenge authentication verification.
+
+---
+
 ## 📦 Installation
 
 Install from source or local checkout:
@@ -254,6 +267,7 @@ python3 -m unittest discover tests/
 
 This library builds upon foundational protocol research and reverse-engineering from the community:
 
+* **[Fr0st3h / PuffcoBLE](https://github.com/Fr0st3h/PuffcoBLE)**: Early Python library exploring Lorax path reads and LED lighting controls.
 * **[PuffcoPC by meekzyr](https://github.com/meekzyr/PuffcoPC)**: The original project exploring Puffco Bluetooth communication and pairing.
 * **[home-assistant-puffco](https://github.com/HA-Puff/home-assistant-puffco)**: Fantastic Home Assistant integration documenting Lorax paths and characteristics.
 * **[Bleak](https://github.com/hbldh/bleak)**: The backbone asynchronous BLE library for Python.
@@ -263,3 +277,9 @@ This library builds upon foundational protocol research and reverse-engineering 
 ## 📜 License
 
 This project is licensed under the [MIT License](LICENSE).
+
+---
+
+## ⚖️ Legal Disclaimer
+
+`puffco-ble` is an independent, community-developed open-source reverse-engineering project. It is **NOT** affiliated with, authorized, maintained, sponsored, or endorsed by **Puff Corp.** (registered in Delaware) or any of its affiliates. All trademarks—including Puffco, Peak, Peak Pro, Proxy, 3D Chamber, and 3DXL—are registered trademarks of Puff Corp. Nominative use of these names is strictly for identification and interoperability purposes under Fair Use.

@@ -8,7 +8,7 @@
  * 3. If consent is declined, tracking scripts are never loaded.
  */
 
-const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // <-- PASTE YOUR GA4 MEASUREMENT ID HERE
+const GA_MEASUREMENT_ID = 'G-HL07GGMKE1';
 
 (function () {
   'use strict';
@@ -16,19 +16,20 @@ const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX'; // <-- PASTE YOUR GA4 MEASUREMENT ID H
   const STORAGE_KEY = 'puffco_cookie_consent';
 
   function initAnalytics() {
-    if (GA_MEASUREMENT_ID === 'G-XXXXXXXXXX' || !GA_MEASUREMENT_ID) {
-      console.info('[Analytics] Placeholder ID detected (G-XXXXXXXXXX). Set your Measurement ID in assets/js/analytics.js to enable live tracking.');
+    if (!GA_MEASUREMENT_ID || GA_MEASUREMENT_ID === 'G-XXXXXXXXXX') {
       return;
     }
 
     if (window.gaLoaded) return;
     window.gaLoaded = true;
 
-    // Load Google Analytics script tag asynchronously
-    const script = document.createElement('script');
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
-    document.head.appendChild(script);
+    // Load Google Analytics script tag asynchronously if not already present in DOM
+    if (!document.querySelector(`script[src*="${GA_MEASUREMENT_ID}"]`)) {
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+      document.head.appendChild(script);
+    }
 
     window.dataLayer = window.dataLayer || [];
     function gtag() { window.dataLayer.push(arguments); }

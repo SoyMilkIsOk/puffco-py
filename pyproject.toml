@@ -2,6 +2,11 @@
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["puffco_ble*"]
+exclude = ["site*", "tests*", "examples*", "build*"]
+
 [project]
 name = "puffco-ble"
 version = "0.1.0"
