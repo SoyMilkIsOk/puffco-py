@@ -38,6 +38,11 @@ jobs:
       - name: Run Mypy Type Checker
         run: mypy puffco_py/
 
+      - name: Build package distributions and verify metadata
+        run: |
+          python -m build
+          python -m twine check dist/*
+
   test:
     name: Test (${{ matrix.os }} - Python ${{ matrix.python-version }})
     needs: lint-and-typecheck

@@ -13,18 +13,17 @@ puffco_py = ["py.typed"]
 
 [project]
 name = "puffco-py"
-version = "0.1.2"
+version = "0.1.3"
 description = "Modern, standalone Python BLE client and telemetry engine for Puffco Peak Pro and Proxy devices."
 readme = "README.md"
 authors = [
     { name = "Sam S." }
 ]
-license = { text = "MIT" }
+license = "MIT"
 keywords = ["puffco", "peak", "proxy", "bluetooth", "ble", "lorax", "iot", "reverse-engineering"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -51,6 +50,7 @@ dev = [
     "ruff>=0.1.0",
     "mypy>=1.0.0",
     "build>=1.0.0",
+    "twine>=4.0.0",
 ]
 
 [project.scripts]

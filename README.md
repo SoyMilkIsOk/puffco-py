@@ -1,5 +1,6 @@
 # puffco-py 💨
 
+[![CI](https://github.com/SoyMilkIsOk/puffco-py/actions/workflows/ci.yml/badge.svg)](https://github.com/SoyMilkIsOk/puffco-py/actions/workflows/ci.yml)
 [![PyPI Version](https://img.shields.io/pypi/v/puffco-py.svg?color=blue)](https://pypi.org/project/puffco-py/)
 [![Python Versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-brightgreen.svg)](https://pypi.org/project/puffco-py/)
 [![Docs](https://img.shields.io/badge/docs-puffco--py.soymilkisok.com-blue)](https://puffco-py.soymilkisok.com)
@@ -121,6 +122,14 @@ Run the offline unit test suite:
 ```bash
 python3 -m unittest discover tests/
 ```
+
+---
+
+## Contributing
+
+Contributions, bug reports, and hardware dumps are warmly welcomed! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting pull requests.
+
+Check out the [Changelog](CHANGELOG.md) for release notes and version history.
 
 ---
 

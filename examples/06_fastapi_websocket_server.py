@@ -142,9 +142,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Puffco Telemetry & Session Server",
-    description="REST & WebSocket API server powered by puffco-py",
-    version="0.1.2",
+    title="Puffco Peak Pro Telemetry & Control API",
+    description="REST endpoints and real-time WebSocket broadcast hub for Puffco hardware.",
+    version="0.1.3",
     lifespan=lifespan,
 )
 
