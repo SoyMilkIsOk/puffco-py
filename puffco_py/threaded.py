@@ -10,7 +10,7 @@ from typing import Callable, List, Optional
 
 from .client import PuffcoClient
 from .discovery import PuffcoDiscoveredDevice, scan_puffco_devices
-from .models import OperatingState, PuffcoTelemetry
+from .models import OperatingState, PuffcoProfile, PuffcoTelemetry
 
 logger = logging.getLogger("puffco_py.threaded")
 
@@ -277,11 +277,46 @@ class ThreadedPuffcoClient:
         if self._client and self._loop and self._loop.is_running():
             return asyncio.run_coroutine_threadsafe(self._client.set_profile(slot), self._loop)
 
-    def set_temperature(self, temp_f: float):
-        """Sets temperature for active profile."""
+    def set_temperature(self, temp_f: float, slot: Optional[int] = None):
+        """Sets temperature for active profile (or specified slot 0..3)."""
         if self._client and self._loop and self._loop.is_running():
             return asyncio.run_coroutine_threadsafe(
-                self._client.set_temperature(temp_f), self._loop
+                self._client.set_temperature(temp_f, slot=slot), self._loop
+            )
+
+    def set_profile_duration(self, slot: int, seconds: int):
+        """Sets duration in seconds for specified profile slot."""
+        if self._client and self._loop and self._loop.is_running():
+            return asyncio.run_coroutine_threadsafe(
+                self._client.set_profile_duration(slot, seconds), self._loop
+            )
+
+    def set_profile_name(self, slot: int, name: str):
+        """Sets display name for specified profile slot."""
+        if self._client and self._loop and self._loop.is_running():
+            return asyncio.run_coroutine_threadsafe(
+                self._client.set_profile_name(slot, name), self._loop
+            )
+
+    def save_profile(self, slot: int, profile: PuffcoProfile):
+        """Saves name, temperature, and duration for specified profile slot."""
+        if self._client and self._loop and self._loop.is_running():
+            return asyncio.run_coroutine_threadsafe(
+                self._client.save_profile(slot, profile), self._loop
+            )
+
+    def set_boost_temperature(self, temp_f: float):
+        """Sets boost session temperature increment in °F."""
+        if self._client and self._loop and self._loop.is_running():
+            return asyncio.run_coroutine_threadsafe(
+                self._client.set_boost_temperature(temp_f), self._loop
+            )
+
+    def set_boost_duration(self, seconds: int):
+        """Sets boost session time extension in seconds."""
+        if self._client and self._loop and self._loop.is_running():
+            return asyncio.run_coroutine_threadsafe(
+                self._client.set_boost_duration(seconds), self._loop
             )
 
     def set_stealth_mode(self, enabled: bool):

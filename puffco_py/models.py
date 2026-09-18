@@ -66,6 +66,7 @@ class PuffcoTelemetry:
     connected: bool = False
     mac_address: str = ""
     device_name: str = "Puffco Device"
+    device_model: str = "Peak Pro"
     serial_number: str = ""
     firmware_version: str = ""
 
@@ -75,6 +76,8 @@ class PuffcoTelemetry:
     target_temp_f: float = 510.0
     time_remaining: int = 0
     total_time: int = 45
+    boost_temp_f: int = 15
+    boost_duration_s: int = 15
 
     # Hardware & Battery Diagnostics
     battery_pct: int = 0
@@ -117,3 +120,22 @@ class PuffcoTelemetry:
             f"Chamber: {self.chamber_name} | "
             f"Dabs: {self.lifetime_dabs}"
         )
+
+
+def resolve_device_model(name: str = "", model_number: str = "", firmware: str = "") -> str:
+    """
+    Identifies the specific Puffco hardware model based on device name,
+    GATT model number string (0x2A24), and firmware version.
+    """
+    combined = f"{name} {model_number}".lower().strip()
+    if "proxy" in combined:
+        return "Puffco Proxy"
+    if "pivot" in combined:
+        return "Puffco Pivot"
+    if "v2" in combined or "new peak" in combined or "desert" in combined or "flourish" in combined:
+        return "Peak Pro (V2)"
+    if "v1" in combined or "opal" in combined or "indiglow" in combined:
+        return "Peak Pro (V1)"
+    if "mock" in combined:
+        return "Mock Peak Pro"
+    return "Peak Pro"

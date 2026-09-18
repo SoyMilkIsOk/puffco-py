@@ -39,6 +39,7 @@ def create_mock_proxy(
         auth_fail=auth_fail,
         connect_fail=connect_fail,
     )
+    client.model_number = "Puffco Proxy"
     client.vfs[PATH_DEVICE_NAME] = b"Puffco Proxy\x00"
     client.vfs[PATH_CHAMBER_TYPE] = bytes([ChamberType.TOAD.value])
     return client

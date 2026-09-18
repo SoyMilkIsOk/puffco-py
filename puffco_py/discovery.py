@@ -27,6 +27,7 @@ from .constants import (
     PUFFCO_NAME_KEYWORDS,
 )
 from .exceptions import PuffcoConnectionError, PuffcoError
+from .models import resolve_device_model
 
 logger = logging.getLogger("puffco_py.discovery")
 
@@ -40,9 +41,10 @@ class PuffcoDiscoveredDevice:
     rssi: int
     is_lorax: bool = True
     device: Optional[BLEDevice] = None
+    device_model: str = "Peak Pro"
 
     def __str__(self) -> str:
-        return f"{self.name} ({self.address}) - RSSI: {self.rssi} dBm"
+        return f"{self.name} ({self.address}) - {self.device_model} - RSSI: {self.rssi} dBm"
 
 
 def is_puffco_device(device: BLEDevice, adv: AdvertisementData) -> bool:
@@ -95,6 +97,7 @@ async def scan_puffco_devices(timeout: float = 5.0) -> List[PuffcoDiscoveredDevi
                 rssi=adv.rssi,
                 is_lorax=is_lorax,
                 device=device,
+                device_model=resolve_device_model(name=name),
             )
 
     try:

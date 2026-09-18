@@ -112,7 +112,7 @@
             Developer reference for Puffco Peak Pro and Proxy BLE telemetry and control.
           </p>
           <div class="docs-badge-row">
-            <span class="brand-badge">Python 3.9–3.12</span>
+            <span class="brand-badge">Python 3.9–3.13</span>
             <span class="brand-badge">Bleak GATT</span>
             <span class="brand-badge">Lorax VFS</span>
             <span class="brand-badge">MIT License</span>
@@ -440,12 +440,42 @@ python3 examples/04_mac_menu_widget.py</code></pre>
                 </tr>
                 <tr>
                   <td><code>async set_profile(slot: int)</code></td>
-                  <td><code>None</code></td>
+                  <td><code>bool</code></td>
                   <td>Switches active profile slot (0–3).</td>
                 </tr>
                 <tr>
+                  <td><code>async set_temperature(temp_f, slot=None)</code></td>
+                  <td><code>bool</code></td>
+                  <td>Sets target temperature for the active profile (or specified slot).</td>
+                </tr>
+                <tr>
+                  <td><code>async set_profile_duration(slot, seconds)</code></td>
+                  <td><code>bool</code></td>
+                  <td>Sets session timer duration (15–180s) for a profile slot.</td>
+                </tr>
+                <tr>
+                  <td><code>async set_profile_name(slot, name)</code></td>
+                  <td><code>bool</code></td>
+                  <td>Sets display name (up to 16 chars) for a profile slot.</td>
+                </tr>
+                <tr>
+                  <td><code>async save_profile(slot, profile)</code></td>
+                  <td><code>bool</code></td>
+                  <td>Atomically updates name, temperature, and duration for a profile.</td>
+                </tr>
+                <tr>
+                  <td><code>async set_boost_temperature(temp_f)</code></td>
+                  <td><code>bool</code></td>
+                  <td>Configures heat boost temperature increment in °F (+5 to +50°F).</td>
+                </tr>
+                <tr>
+                  <td><code>async set_boost_duration(seconds)</code></td>
+                  <td><code>bool</code></td>
+                  <td>Configures heat boost session extension in seconds (+5 to +60s).</td>
+                </tr>
+                <tr>
                   <td><code>async set_stealth_mode(enabled: bool)</code></td>
-                  <td><code>None</code></td>
+                  <td><code>bool</code></td>
                   <td>Toggles device mood lights on or off.</td>
                 </tr>
                 <tr>
@@ -472,6 +502,16 @@ python3 examples/04_mac_menu_widget.py</code></pre>
                 </tr>
               </thead>
               <tbody>
+                <tr>
+                  <td><code>device_name</code></td>
+                  <td><code>str</code></td>
+                  <td>Configured user device name.</td>
+                </tr>
+                <tr>
+                  <td><code>device_model</code></td>
+                  <td><code>str</code></td>
+                  <td>Identified hardware model: <code>"Peak Pro (V2)"</code>, <code>"Peak Pro (V1)"</code>, <code>"Puffco Proxy"</code>, <code>"Puffco Pivot"</code>.</td>
+                </tr>
                 <tr>
                   <td><code>live_temp_f</code></td>
                   <td><code>float</code></td>
@@ -503,9 +543,29 @@ python3 examples/04_mac_menu_widget.py</code></pre>
                   <td><code>IDLE</code>, <code>HEAT_PREHEAT</code>, <code>HEAT_ACTIVE</code>, <code>HEAT_FADE</code>.</td>
                 </tr>
                 <tr>
+                  <td><code>time_remaining</code></td>
+                  <td><code>int</code></td>
+                  <td>Remaining session seconds during active heating.</td>
+                </tr>
+                <tr>
+                  <td><code>total_time</code></td>
+                  <td><code>int</code></td>
+                  <td>Total programmed duration of active profile.</td>
+                </tr>
+                <tr>
                   <td><code>lifetime_dabs</code></td>
                   <td><code>int</code></td>
                   <td>Total completed sessions stored in hardware memory.</td>
+                </tr>
+                <tr>
+                  <td><code>boost_temp_f</code></td>
+                  <td><code>int</code></td>
+                  <td>Configured heat boost temperature increment (°F).</td>
+                </tr>
+                <tr>
+                  <td><code>boost_duration_s</code></td>
+                  <td><code>int</code></td>
+                  <td>Configured heat boost session extension (seconds).</td>
                 </tr>
               </tbody>
             </table>
@@ -568,25 +628,46 @@ python3 examples/04_mac_menu_widget.py</code></pre>
 
         <!-- 12. TROUBLESHOOTING -->
         <section class="docs-section" id="troubleshooting">
-          <h2>Troubleshooting</h2>
+          <h2>Platform Troubleshooting &amp; Gotchas</h2>
 
-          <h3>Device not found during scan</h3>
+          <h3>1. The Single-Central Rule (Exclusive Connection)</h3>
           <p>
-            Ensure your Puffco is powered on and within range (~5–10 feet). If connected to the official Puffco Connect app, BLE will reject secondary connections. Disconnect the app and re-run <code>puffco-py scan</code>.
+            Puffco hardware only supports <strong>one active BLE connection at a time</strong>. If the official Puffco iOS/Android app or Puffco Web App (Chrome) is running in the background on your phone, the device will reject connection attempts from <code>puffco-py</code>.
+          </p>
+          <p>
+            <strong>Solution:</strong> Completely force-close the mobile app and close any active Web Bluetooth browser tabs before running your Python scripts or CLI commands.
           </p>
 
-          <h3>Permission denied on macOS</h3>
+          <h3>2. Linux &amp; Raspberry Pi (BlueZ Permissions)</h3>
           <p>
-            In macOS Ventura/Sonoma/Sequoia, terminal apps need explicit Bluetooth authorization. Go to <em>System Settings &gt; Privacy &amp; Security &gt; Bluetooth</em> and toggle your terminal app ON.
+            The Linux kernel restricts raw BLE socket creation to <code>root</code> by default. If device scanning returns zero results or throws <code>PermissionDenied</code>:
           </p>
-
-          <h3>Running tests</h3>
           <div class="code-block">
             <div class="code-header">
               <span class="code-lang-tag">bash</span>
-              <button class="btn-code-copy" data-copy="python3 -m unittest discover tests/">Copy</button>
+              <button class="btn-code-copy" data-copy="sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python3))">Copy</button>
             </div>
-            <pre><code>python3 -m unittest discover tests/</code></pre>
+            <pre><code>sudo setcap 'cap_net_raw,cap_net_admin+eip' $(readlink -f $(which python3))
+sudo systemctl status bluetooth</code></pre>
+          </div>
+
+          <h3>3. macOS Bluetooth Permissions</h3>
+          <p>
+            On macOS Ventura, Sonoma, and Sequoia, terminal applications require explicit authorization under TCC privacy controls. Go to <em>System Settings &gt; Privacy &amp; Security &gt; Bluetooth</em> and ensure your terminal app (Terminal, iTerm2, or VS Code) is toggled <strong>ON</strong>.
+          </p>
+
+          <h3>4. Windows 10 / 11 Bluetooth Pairing</h3>
+          <p>
+            The Windows WinRT BLE stack requires the Puffco Peak Pro to be paired in Windows Settings before third-party applications can enumerate GATT services. Open <em>Settings &gt; Bluetooth &amp; devices &gt; Add device</em>, put your Peak Pro into pairing mode, and pair it once in Windows.
+          </p>
+
+          <h3>5. Running Offline Tests</h3>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="code-lang-tag">bash</span>
+              <button class="btn-code-copy" data-copy="pytest tests/ -v">Copy</button>
+            </div>
+            <pre><code>pytest tests/ -v   # or: python3 -m unittest discover tests/</code></pre>
           </div>
         </section>
 

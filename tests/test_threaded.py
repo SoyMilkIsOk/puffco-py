@@ -5,7 +5,7 @@ Unit tests for ThreadedPuffcoClient background worker thread and synchronous API
 import time
 import unittest
 
-from puffco_py.models import OperatingState
+from puffco_py.models import OperatingState, PuffcoProfile
 from puffco_py.threaded import ThreadedPuffcoClient
 
 
@@ -125,6 +125,35 @@ class TestThreadedPuffcoClient(unittest.TestCase):
             fut = client.set_lantern(False)
             if fut:
                 fut.result(timeout=2.0)
+
+            # 8. Set Profile Duration & Name
+            fut = client.set_profile_duration(1, 55)
+            if fut:
+                fut.result(timeout=2.0)
+            self.assertEqual(client.telemetry.profiles[1].duration_s, 55)
+
+            fut = client.set_profile_name(1, "MELT")
+            if fut:
+                fut.result(timeout=2.0)
+            self.assertEqual(client.telemetry.profiles[1].name, "MELT")
+
+            # 9. Save Profile
+            prof = PuffcoProfile(slot=3, name="WATER HASH", target_temp_f=460, duration_s=40)
+            fut = client.save_profile(3, prof)
+            if fut:
+                self.assertTrue(fut.result(timeout=2.0))
+            self.assertEqual(client.telemetry.profiles[3].name, "WATER HASH")
+
+            # 10. Boost Settings
+            fut = client.set_boost_temperature(25.0)
+            if fut:
+                fut.result(timeout=2.0)
+            self.assertEqual(client.telemetry.boost_temp_f, 25)
+
+            fut = client.set_boost_duration(20)
+            if fut:
+                fut.result(timeout=2.0)
+            self.assertEqual(client.telemetry.boost_duration_s, 20)
 
         finally:
             client.stop()

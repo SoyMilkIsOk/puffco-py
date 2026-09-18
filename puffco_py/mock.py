@@ -12,6 +12,7 @@ from typing import Any, Callable, Dict, List, Optional
 
 from .constants import (
     DEVINFO_FIRMWARE_UUID,
+    DEVINFO_MODEL_NUMBER_UUID,
     DEVINFO_SERIAL_UUID,
     LORAX_MASTER_HANDSHAKE_KEY,
     LORAX_OP_GET_ACCESS_SEED,
@@ -21,6 +22,8 @@ from .constants import (
     PATH_ACTIVE_PROFILE,
     PATH_BATTERY_CHARGE_STAT,
     PATH_BATTERY_SOC,
+    PATH_BOOST_TEMP,
+    PATH_BOOST_TIME,
     PATH_CHAMBER_TEMP,
     PATH_CHAMBER_TYPE,
     PATH_DEVICE_NAME,
@@ -89,6 +92,7 @@ class MockBleakClient:
         self.auth_fail = auth_fail
         self.connect_fail = connect_fail
         self.timeout_opcodes = timeout_opcodes or []
+        self.model_number = "Peak Pro V2"
 
         self._seed = b"0123456789abcdef"
         self._notify_cb: Optional[Callable[[str, bytearray], None]] = None
@@ -127,6 +131,10 @@ class MockBleakClient:
             self.vfs[PATH_PROFILE_TEMP_PREFIX.format(slot=slot)] = struct.pack("<f", f_to_c(temp_f))
             self.vfs[PATH_PROFILE_TIME_PREFIX.format(slot=slot)] = struct.pack("<I", duration)
 
+        # Boost Settings
+        self.vfs[PATH_BOOST_TEMP] = struct.pack("<f", f_to_c(15.0))
+        self.vfs[PATH_BOOST_TIME] = struct.pack("<I", 15)
+
     async def connect(self, timeout: float = 10.0) -> bool:
         """Simulates BLE connect."""
         if self.connect_fail:
@@ -154,6 +162,8 @@ class MockBleakClient:
             return b"MOCK-SN-88219"
         elif u == DEVINFO_FIRMWARE_UUID.lower():
             return b"W.X.Y (FW v1.2.3)"
+        elif u == DEVINFO_MODEL_NUMBER_UUID.lower():
+            return self.model_number.encode("utf-8")
         elif u == PUFFCO_LORAX_CHAR_VERSION.lower():
             return b"Lorax v1.0.0"
         return b""

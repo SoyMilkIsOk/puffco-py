@@ -31,6 +31,8 @@ pip install -e ".[gui]"
 | **[`02_session_control.py`](02_session_control.py)** | Async | `asyncio` + `bleak` | Inspects profiles, switches slots, toggles stealth mode, session control. |
 | **[`03_threaded_gui.py`](03_threaded_gui.py)** | Synchronous | `ThreadedPuffcoClient` | Background BLE worker pattern for desktop GUIs (Tkinter, PyQt, etc.). |
 | **[`04_mac_menu_widget.py`](04_mac_menu_widget.py)** | Desktop / GUI | `rumps` (macOS) | Native macOS menu bar status app with live metrics and session buttons. |
+| **[`05_home_assistant_mqtt.py`](05_home_assistant_mqtt.py)** | IoT / Bridge | `paho-mqtt` | Turnkey Home Assistant MQTT Auto-Discovery bridge for sensors and controls. |
+| **[`06_fastapi_websocket_server.py`](06_fastapi_websocket_server.py)** | Web API / WS | `fastapi` + `uvicorn` | High-performance REST and sub-100ms WebSocket streaming server for web apps. |
 
 ---
 
@@ -109,6 +111,55 @@ A lightweight, native macOS menu bar widget using `rumps`.
 - **How to run**:
   ```bash
   python3 examples/04_mac_menu_widget.py
+  ```
+
+---
+
+### 5. [`05_home_assistant_mqtt.py`](05_home_assistant_mqtt.py) — Home Assistant MQTT Discovery Bridge
+
+Connects your Puffco Peak Pro or Proxy directly into Home Assistant via MQTT Discovery without writing custom YAML configurations.
+
+- **Requirements**:
+  - `pip install paho-mqtt`
+  - A running MQTT broker (like Mosquitto in Home Assistant)
+- **What it does**:
+  - Automatically registers sensors in Home Assistant:
+    - Live Bowl Temperature (`°F`)
+    - Target Temperature (`°F`)
+    - Battery Level (`%`) & Charging State
+    - Operating State (Idle, Heating, Ready, Fade)
+    - Chamber Type (3DXL, 3D, Proxy)
+    - Total Lifetime Dabs
+    - Active Profile Name
+  - Subscribes to Home Assistant command topics to start/stop sessions, apply heat boosts, and toggle stealth mode.
+- **How to run**:
+  ```bash
+  # Test with simulated offline hardware:
+  python3 examples/05_home_assistant_mqtt.py --mock --broker 192.168.1.50
+
+  # Run against real hardware:
+  python3 examples/05_home_assistant_mqtt.py --mac F7:11:95:C5:14:9B --broker 192.168.1.50 --username homeassistant --password secret
+  ```
+
+---
+
+### 6. [`06_fastapi_websocket_server.py`](06_fastapi_websocket_server.py) — FastAPI REST & WebSocket Server
+
+High-performance web server exposing a complete REST API and sub-100ms WebSocket feed for browser controllers, web dashboards, or custom mobile clients.
+
+- **Requirements**:
+  - `pip install fastapi uvicorn`
+- **What it does**:
+  - Provides REST endpoints for live device telemetry, starting/stopping sessions, heat boosts, profile switching, and profile customization (`/api/profile/update`).
+  - Broadcasts live WebSocket messages (`/ws`) on every telemetry tick.
+  - Interactive OpenAPI docs automatically hosted at `/docs`.
+- **How to run**:
+  ```bash
+  # Run with simulated offline hardware:
+  python3 examples/06_fastapi_websocket_server.py --mock
+
+  # Run against physical hardware:
+  python3 examples/06_fastapi_websocket_server.py --mac F7:11:95:C5:14:9B --host 0.0.0.0 --port 8000
   ```
 
 ---

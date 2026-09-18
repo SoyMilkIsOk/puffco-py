@@ -19,6 +19,7 @@ else:
 
 from .constants import (
     DEVINFO_FIRMWARE_UUID,
+    DEVINFO_MODEL_NUMBER_UUID,
     DEVINFO_SERIAL_UUID,
     LORAX_MASTER_HANDSHAKE_KEY,
     LORAX_OP_GET_ACCESS_SEED,
@@ -28,6 +29,8 @@ from .constants import (
     PATH_ACTIVE_PROFILE,
     PATH_BATTERY_CHARGE_STAT,
     PATH_BATTERY_SOC,
+    PATH_BOOST_TEMP,
+    PATH_BOOST_TIME,
     PATH_CHAMBER_TEMP,
     PATH_CHAMBER_TYPE,
     PATH_DEVICE_NAME,
@@ -58,6 +61,7 @@ from .models import (
     OperatingState,
     PuffcoProfile,
     PuffcoTelemetry,
+    resolve_device_model,
 )
 from .protocol import (
     calculate_lorax_auth_token,
@@ -105,6 +109,7 @@ class PuffcoClient:
 
         self._streaming = False
         self._stream_task: Optional[asyncio.Task] = None
+        self._last_profile_mutation = 0.0
         self._telemetry_listeners: List[Callable[[PuffcoTelemetry], None]] = []
         self._state_listeners: List[Callable[[OperatingState], None]] = []
         self._connection_listeners: List[Callable[[bool], None]] = []
@@ -357,6 +362,20 @@ class PuffcoClient:
                 self.telemetry.firmware_version = fw.decode("utf-8", errors="ignore").strip()
         except Exception:
             pass
+        model_str = ""
+        try:
+            mod = await self._client.read_gatt_char(DEVINFO_MODEL_NUMBER_UUID)
+            if mod:
+                model_str = mod.decode("utf-8", errors="ignore").strip()
+        except Exception:
+            pass
+
+        self._model_number_raw = model_str
+        self.telemetry.device_model = resolve_device_model(
+            name=self.telemetry.device_name,
+            model_number=model_str,
+            firmware=self.telemetry.firmware_version,
+        )
 
     async def _poll_fast_telemetry(self):
         """Reads fast real-time metrics (operating state, temperature, countdown timer)."""
@@ -420,6 +439,11 @@ class PuffcoClient:
             clean = name_b.decode("utf-8", errors="ignore").rstrip("\x00").strip()
             if clean:
                 self.telemetry.device_name = clean
+                self.telemetry.device_model = resolve_device_model(
+                    name=clean,
+                    model_number=getattr(self, "_model_number_raw", ""),
+                    firmware=self.telemetry.firmware_version,
+                )
 
         # Battery
         soc_b = await self.read_path(PATH_BATTERY_SOC)
@@ -451,28 +475,35 @@ class PuffcoClient:
             self.telemetry.active_profile = prof_b[0]
 
         # Profiles (Slots 0..3)
-        profiles = []
+        poll_start = time.time()
+        if not self.telemetry.profiles or len(self.telemetry.profiles) < 4:
+            self.telemetry.profiles = [
+                PuffcoProfile(slot=i, name=f"Profile {i + 1}", target_temp_f=0, duration_s=45)
+                for i in range(4)
+            ]
+
         for slot in range(4):
             pn_b = await self.read_path(PATH_PROFILE_NAME_PREFIX.format(slot=slot))
             pt_b = await self.read_path(PATH_PROFILE_TEMP_PREFIX.format(slot=slot))
             ptime_b = await self.read_path(PATH_PROFILE_TIME_PREFIX.format(slot=slot))
 
-            p_name = (
-                pn_b.decode("utf-8", errors="ignore").rstrip("\x00").strip()
-                if pn_b
-                else f"Profile {slot + 1}"
-            )
-            p_temp = int(round(parse_temp(pt_b))) if pt_b else 0
-            p_time = struct.unpack("<I", ptime_b[:4])[0] if ptime_b and len(ptime_b) >= 4 else 45
+            if self._last_profile_mutation < poll_start:
+                if pn_b:
+                    clean_name = pn_b.decode("utf-8", errors="ignore").rstrip("\x00").strip()
+                    if clean_name:
+                        self.telemetry.profiles[slot].name = clean_name
+                if pt_b:
+                    t_val = int(round(parse_temp(pt_b)))
+                    if t_val > 0:
+                        self.telemetry.profiles[slot].target_temp_f = t_val
+                if ptime_b and len(ptime_b) >= 4:
+                    d_val = struct.unpack("<I", ptime_b[:4])[0]
+                    if d_val > 0:
+                        self.telemetry.profiles[slot].duration_s = d_val
 
-            profiles.append(
-                PuffcoProfile(slot=slot, name=p_name, target_temp_f=p_temp, duration_s=p_time)
-            )
-
-        if profiles:
-            self.telemetry.profiles = profiles
-            if 0 <= self.telemetry.active_profile < len(profiles):
-                active_t = profiles[self.telemetry.active_profile].target_temp_f
+        if self._last_profile_mutation < poll_start:
+            if 0 <= self.telemetry.active_profile < len(self.telemetry.profiles):
+                active_t = self.telemetry.profiles[self.telemetry.active_profile].target_temp_f
                 if active_t > 0:
                     self.telemetry.target_temp_f = float(active_t)
 
@@ -480,6 +511,17 @@ class PuffcoClient:
         stlth_b = await self.read_path(PATH_STEALTH_MODE)
         if stlth_b and len(stlth_b) >= 1:
             self.telemetry.stealth_mode = bool(stlth_b[0])
+
+        # Boost Settings
+        try:
+            bst_t_b = await self.read_path(PATH_BOOST_TEMP)
+            if bst_t_b:
+                self.telemetry.boost_temp_f = int(round(parse_temp(bst_t_b)))
+            bst_time_b = await self.read_path(PATH_BOOST_TIME)
+            if bst_time_b and len(bst_time_b) >= 4:
+                self.telemetry.boost_duration_s = struct.unpack("<I", bst_time_b[:4])[0]
+        except Exception:
+            pass
 
     # ==========================================
     # STREAMING LOOP & LISTENERS
@@ -537,7 +579,7 @@ class PuffcoClient:
         self._streaming = True
 
         async def _loop():
-            last_slow = 0.0
+            last_slow = time.time()
             while self._streaming and self.is_connected:
                 try:
                     await self._poll_fast_telemetry()
@@ -601,6 +643,7 @@ class PuffcoClient:
         logger.info(f"Setting active profile to slot {slot}")
         success = await self.write_path(PATH_ACTIVE_PROFILE, bytes([slot]))
         if success:
+            self._last_profile_mutation = time.time()
             self.telemetry.active_profile = slot
             if self.telemetry.profiles and slot < len(self.telemetry.profiles):
                 t = self.telemetry.profiles[slot].target_temp_f
@@ -609,11 +652,11 @@ class PuffcoClient:
             self._notify_listeners()
         return success
 
-    async def set_temperature(self, temp_f: float) -> bool:
-        """Sets target temperature for the active profile."""
+    async def set_temperature(self, temp_f: float, slot: Optional[int] = None) -> bool:
+        """Sets target temperature for the active profile (or specified slot 0..3)."""
         c = f_to_c(temp_f)
-        slot = self.telemetry.active_profile
-        path = PATH_PROFILE_TEMP_PREFIX.format(slot=slot)
+        target_slot = self.telemetry.active_profile if slot is None else max(0, min(3, int(slot)))
+        path = PATH_PROFILE_TEMP_PREFIX.format(slot=target_slot)
 
         if "proxy" in self.telemetry.device_name.lower():
             payload = struct.pack("<i", int(round(c * 10.0)))
@@ -622,7 +665,85 @@ class PuffcoClient:
 
         success = await self.write_path(path, payload)
         if success:
-            self.telemetry.target_temp_f = temp_f
+            self._last_profile_mutation = time.time()
+            if self.telemetry.profiles and target_slot < len(self.telemetry.profiles):
+                self.telemetry.profiles[target_slot].target_temp_f = int(round(temp_f))
+            if target_slot == self.telemetry.active_profile:
+                self.telemetry.target_temp_f = temp_f
+            self._notify_listeners()
+        return success
+
+    async def set_profile_duration(self, slot: int, seconds: int) -> bool:
+        """Sets the session duration in seconds (15..180s) for a profile slot."""
+        slot = max(0, min(3, int(slot)))
+        seconds = max(15, min(180, int(seconds)))
+        logger.info(f"Setting profile {slot} duration to {seconds}s")
+        path = PATH_PROFILE_TIME_PREFIX.format(slot=slot)
+        payload = struct.pack("<I", seconds)
+        success = await self.write_path(path, payload)
+        if success:
+            self._last_profile_mutation = time.time()
+            if self.telemetry.profiles and slot < len(self.telemetry.profiles):
+                self.telemetry.profiles[slot].duration_s = seconds
+            if slot == self.telemetry.active_profile:
+                self.telemetry.total_time = seconds
+            self._notify_listeners()
+        return success
+
+    async def set_profile_name(self, slot: int, name: str) -> bool:
+        """Sets the profile display name (up to 16 chars) for a profile slot."""
+        slot = max(0, min(3, int(slot)))
+        clean_name = name.strip()[:16]
+        logger.info(f"Setting profile {slot} name to '{clean_name}'")
+        path = PATH_PROFILE_NAME_PREFIX.format(slot=slot)
+        payload = clean_name.encode("utf-8")
+        success = await self.write_path(path, payload)
+        if success:
+            self._last_profile_mutation = time.time()
+            if self.telemetry.profiles and slot < len(self.telemetry.profiles):
+                self.telemetry.profiles[slot].name = clean_name
+            self._notify_listeners()
+        return success
+
+    async def save_profile(self, slot: int, profile: PuffcoProfile) -> bool:
+        """Saves name, temperature, and duration for a given profile slot."""
+        slot = max(0, min(3, int(slot)))
+        ok_name = await self.set_profile_name(slot, profile.name)
+        ok_temp = await self.set_temperature(float(profile.target_temp_f), slot=slot)
+        ok_dur = await self.set_profile_duration(slot, profile.duration_s)
+        success = bool(ok_name and ok_temp and ok_dur)
+        if success:
+            self._last_profile_mutation = time.time()
+            if self.telemetry.profiles and slot < len(self.telemetry.profiles):
+                self.telemetry.profiles[slot].name = profile.name.strip()[:16]
+                self.telemetry.profiles[slot].target_temp_f = int(round(profile.target_temp_f))
+                self.telemetry.profiles[slot].duration_s = profile.duration_s
+            self._notify_listeners()
+        return success
+
+    async def set_boost_temperature(self, temp_f: float) -> bool:
+        """Sets boost session temperature increment in °F (e.g. 5 to 50°F)."""
+        temp_f = max(5.0, min(50.0, float(temp_f)))
+        logger.info(f"Setting boost temperature increment to +{temp_f:.0f}°F")
+        c = temp_f * 5.0 / 9.0
+        if "proxy" in self.telemetry.device_name.lower():
+            payload = struct.pack("<i", int(round(c * 10.0)))
+        else:
+            payload = struct.pack("<f", c)
+        success = await self.write_path(PATH_BOOST_TEMP, payload)
+        if success:
+            self.telemetry.boost_temp_f = int(round(temp_f))
+            self._notify_listeners()
+        return success
+
+    async def set_boost_duration(self, seconds: int) -> bool:
+        """Sets boost session time extension in seconds (e.g. 5 to 60s)."""
+        seconds = max(5, min(60, int(seconds)))
+        logger.info(f"Setting boost duration extension to +{seconds}s")
+        payload = struct.pack("<I", seconds)
+        success = await self.write_path(PATH_BOOST_TIME, payload)
+        if success:
+            self.telemetry.boost_duration_s = seconds
             self._notify_listeners()
         return success
 

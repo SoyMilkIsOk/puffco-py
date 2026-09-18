@@ -137,6 +137,15 @@ The Puffco Peak Pro and Proxy communicate over Bluetooth Low Energy (BLE) using 
    - `/u/...` User settings, telemetry streams, stealth modes
    - `/a/...` Diagnostic logs and device hardware metadata
 
+### Lorax Push Notifications (`LORAX_OP_WATCH`) & Polling Architecture
+
+Lorax defines opcodes `LORAX_OP_WATCH` (`0x30`) and `LORAX_OP_UNWATCH` (`0x31`) paired with the `PUFFCO_LORAX_CHAR_EVENT` characteristic (`06a5da28-8d78-4522-97fb-cf34752c363f`) intended for push notifications on file modifications.
+
+**Why puffco-py defaults to adaptive polling:**
+- **Firmware Inconsistencies:** Hardware dumps and testing across Peak Pro V1, V2, and Proxy indicate uneven support. While certain status paths emit event packets, continuous chamber temperature deltas during active heating cycles frequently do not push updates reliably across all firmware versions.
+- **Reliability Guarantee:** To ensure rock-solid stability across every hardware variant, `puffco-py` employs a state-aware adaptive polling loop (150ms during active heat cycles, 2000ms during idle, with slow-path polling decoupled).
+- **Ongoing Research:** If you are reverse-engineering event stream packets or have firmware supporting full async push streaming for live temperature deltas, please submit packet logs via our [Hardware Dump Issue Template](.github/ISSUE_TEMPLATE/hardware_dump.yml)!
+
 ### Capturing BLE Traffic
 
 To discover new endpoints or decode unknown payloads:

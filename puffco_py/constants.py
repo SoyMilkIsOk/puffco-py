@@ -26,6 +26,7 @@ PUFFCO_CHAR_DEVICE_NAME = "06caf9c0-74d3-454f-9be9-e30cd999c18d"
 
 # Device Information Service
 DEVINFO_SVC_UUID = "0000180a-0000-1000-8000-00805f9b34fb"
+DEVINFO_MODEL_NUMBER_UUID = "00002a24-0000-1000-8000-00805f9b34fb"
 DEVINFO_SERIAL_UUID = "00002a25-0000-1000-8000-00805f9b34fb"
 DEVINFO_FIRMWARE_UUID = "00002a26-0000-1000-8000-00805f9b34fb"
 DEVINFO_HARDWARE_UUID = "00002a27-0000-1000-8000-00805f9b34fb"
@@ -73,6 +74,8 @@ PATH_LED_BRIGHTNESS = "/u/app/ui/brt"  # LED brightness (4 bytes: base, mid, gla
 PATH_PROFILE_NAME_PREFIX = "/u/app/hc/{slot}/name"
 PATH_PROFILE_TEMP_PREFIX = "/u/app/hc/{slot}/temp"
 PATH_PROFILE_TIME_PREFIX = "/u/app/hc/{slot}/time"
+PATH_BOOST_TEMP = "/u/app/bst/temp"
+PATH_BOOST_TIME = "/u/app/bst/time"
 
 # ==========================================
 # AUTHENTICATION CONSTANTS

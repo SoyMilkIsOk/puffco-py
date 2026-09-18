@@ -8,7 +8,7 @@ import unittest
 from puffco_py.client import PuffcoClient
 from puffco_py.exceptions import PuffcoConnectionError
 from puffco_py.mock import MockPuffcoClient
-from puffco_py.models import ChamberType, OperatingState
+from puffco_py.models import ChamberType, OperatingState, PuffcoProfile
 from tests.mock_device import create_mock_peak_pro, create_mock_proxy
 
 
@@ -207,6 +207,51 @@ class TestPuffcoClient(unittest.IsolatedAsyncioTestCase):
         # Set temperature on proxy (stored as tenths of C)
         self.assertTrue(await proxy_client.set_temperature(510.0))
         self.assertEqual(proxy_client.telemetry.target_temp_f, 510.0)
+        await proxy_client.disconnect()
+
+    async def test_profile_editing_and_save(self):
+        """Verify full profile customization (duration, name, temp, save_profile)."""
+        await self.client.connect()
+
+        # 1. Edit duration for slot 0
+        self.assertTrue(await self.client.set_profile_duration(0, 60))
+        self.assertEqual(self.client.telemetry.profiles[0].duration_s, 60)
+
+        # 2. Edit name for slot 0
+        self.assertTrue(await self.client.set_profile_name(0, "SUPER ROSIN"))
+        self.assertEqual(self.client.telemetry.profiles[0].name, "SUPER ROSIN")
+
+        # 3. Edit temperature for slot 0
+        self.assertTrue(await self.client.set_temperature(490.0, slot=0))
+        self.assertEqual(self.client.telemetry.profiles[0].target_temp_f, 490)
+
+        # 4. Atomic save_profile for slot 2
+        new_prof = PuffcoProfile(slot=2, name="DIAMONDS", target_temp_f=540, duration_s=45)
+        self.assertTrue(await self.client.save_profile(2, new_prof))
+        self.assertEqual(self.client.telemetry.profiles[2].name, "DIAMONDS")
+        self.assertEqual(self.client.telemetry.profiles[2].target_temp_f, 540)
+        self.assertEqual(self.client.telemetry.profiles[2].duration_s, 45)
+
+    async def test_boost_settings(self):
+        """Verify boost temperature and duration customization."""
+        await self.client.connect()
+
+        self.assertTrue(await self.client.set_boost_temperature(20.0))
+        self.assertEqual(self.client.telemetry.boost_temp_f, 20)
+
+        self.assertTrue(await self.client.set_boost_duration(25))
+        self.assertEqual(self.client.telemetry.boost_duration_s, 25)
+
+    async def test_device_model_detection(self):
+        """Verify device model detection on Peak Pro V2 and Proxy."""
+        await self.client.connect()
+        # Mock Peak Pro returns "Peak Pro V2"
+        self.assertEqual(self.client.telemetry.device_model, "Peak Pro (V2)")
+
+        proxy_ble = create_mock_proxy()
+        proxy_client = PuffcoClient("00:1B:DC:12:34:56", auto_reconnect=False, ble_client=proxy_ble)
+        await proxy_client.connect()
+        self.assertEqual(proxy_client.telemetry.device_model, "Puffco Proxy")
         await proxy_client.disconnect()
 
 
