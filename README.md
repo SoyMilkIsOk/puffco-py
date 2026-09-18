@@ -1,6 +1,6 @@
 # puffco-py 💨
 
-[![PyPI Version](https://img.shields.io/badge/pypi-v0.1.0-blue.svg)](https://pypi.org/project/puffco-py/)
+[![PyPI Version](https://img.shields.io/pypi/v/puffco-py.svg?color=blue)](https://pypi.org/project/puffco-py/)
 [![Python Versions](https://img.shields.io/badge/python-3.9%20%7C%203.10%20%7C%203.11%20%7C%203.12-brightgreen.svg)](https://pypi.org/project/puffco-py/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Powered by Bleak](https://img.shields.io/badge/BLE-Bleak-blueviolet.svg)](https://github.com/hbldh/bleak)
@@ -153,7 +153,9 @@ A fully functional, native status bar widget is provided in [examples/04_mac_men
 ┌────────────────────────────────────────────────────────┐
 │  🔥 520°F (35s)       (or: 💨 480°F | 85% when idle)   │
 └┬───────────────────────────────────────────────────────┘
- │  Status: Heating (Sesh Active)
+ │  Device: SAMS PEAK
+ │  Status: Ready
+ │  Temp: 490.0°F (Target: 510°F)
  │  Battery: 85% (⚡ Charging)
  │  Chamber: 3DXL
  │  Total Dabs: 1,420
@@ -161,6 +163,13 @@ A fully functional, native status bar widget is provided in [examples/04_mac_men
  │  🚀 Start Heat Sesh
  │  ⚡ Boost Heat (+15s / +10°F)
  │  🛑 Abort Sesh
+ │  ───────────────────────────
+ │  🎨 Heat Profiles     ▶  [Slot 1: Low 490°F (45s) ✓]
+ │  ⚙️ Controls & UI     ▶  [Stealth Mode, Lantern Mode]
+ │  📡 Devices & BLE     ▶  [🔍 Scan for Nearby Devices]
+ │                          [✓ SAMS PEAK (-45 dBm)]
+ │                          [✏️ Connect via MAC / UUID...]
+ │                          [🔌 Disconnect Device]
  └─────────────────────────────
 ```
 

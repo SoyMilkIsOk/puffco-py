@@ -9,7 +9,7 @@ exclude = ["site*", "tests*", "examples*", "build*"]
 
 [project]
 name = "puffco-py"
-version = "0.1.0"
+version = "0.1.1"
 description = "Modern, standalone Python BLE client and telemetry engine for Puffco Peak Pro and Proxy devices."
 readme = "README.md"
 authors = [
@@ -46,6 +46,7 @@ dev = [
 ]
 
 [project.scripts]
+puffco = "puffco_py.cli:main"
 puffco-py = "puffco_py.cli:main"
 
 [project.urls]
