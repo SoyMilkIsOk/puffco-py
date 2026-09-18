@@ -42,7 +42,9 @@ ENV/
 
 # Pytest / Coverage
 .pytest_cache/
+.mypy_cache/
 .coverage
 htmlcov/
+.ruff_cache/
 
 .env
