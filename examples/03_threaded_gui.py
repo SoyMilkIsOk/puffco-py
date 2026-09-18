@@ -5,9 +5,9 @@ Demonstrates using ThreadedPuffcoClient to run the BLE engine on a background wo
 thread, allowing simple synchronous method calls and callbacks from the main thread.
 """
 
-from pathlib import Path
 import sys
 import time
+from pathlib import Path
 
 # Ensure parent directory is in sys.path when running from source or subfolder
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
@@ -33,7 +33,9 @@ def main():
         return
 
     print(f"\nConnected to {client.telemetry.device_name}!")
-    print(f"Chamber: {client.telemetry.chamber_name} | Total Dabs: {client.telemetry.lifetime_dabs}")
+    print(
+        f"Chamber: {client.telemetry.chamber_name} | Total Dabs: {client.telemetry.lifetime_dabs}"
+    )
 
     # Synchronous control methods (thread-safe)
     time.sleep(3)

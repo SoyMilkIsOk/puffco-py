@@ -17,9 +17,9 @@ Requires:
     pip install ".[gui]"  # or: pip install rumps bleak
 """
 
-from pathlib import Path
 import sys
 import threading
+from pathlib import Path
 from typing import Dict, List, Optional
 
 # Ensure parent directory is in sys.path when running from source or subfolder
@@ -34,7 +34,7 @@ except ImportError:
     sys.exit(1)
 
 try:
-    import bleak
+    import bleak  # noqa: F401
 except ImportError:
     print("\n❌ Missing required dependency 'bleak'.")
     print("Install BLE requirements with:")
@@ -90,7 +90,9 @@ class PuffcoMenuBarApp(rumps.App):
         # 5. Devices & Scanner Submenu
         self.devices_menu = rumps.MenuItem("📡 Devices & Pairing")
         self.scan_btn = rumps.MenuItem("🔍 Scan for Nearby Devices", callback=self._on_scan_clicked)
-        self.manual_connect_btn = rumps.MenuItem("✏️ Connect via MAC / UUID...", callback=self._on_manual_connect)
+        self.manual_connect_btn = rumps.MenuItem(
+            "✏️ Connect via MAC / UUID...", callback=self._on_manual_connect
+        )
         self.disconnect_btn = rumps.MenuItem("🔌 Disconnect Device", callback=self._on_disconnect)
         self.devices_menu.add(self.scan_btn)
         self.devices_menu.add(self.manual_connect_btn)
@@ -193,7 +195,9 @@ class PuffcoMenuBarApp(rumps.App):
         # Update Telemetry Labels
         self.device_title_item.title = f"Device: {t.device_name}"
         self.status_item.title = f"Status: {t.state_name}"
-        self.battery_item.title = f"Battery: {t.battery_pct}%{' (⚡ Charging)' if t.is_charging else ''}"
+        self.battery_item.title = (
+            f"Battery: {t.battery_pct}%{' (⚡ Charging)' if t.is_charging else ''}"
+        )
         self.chamber_item.title = f"Chamber: {t.chamber_name}"
         self.temp_item.title = f"Temp: {t.live_temp_f:.1f}°F (Target: {t.target_temp_f:.0f}°F)"
         self.dabs_item.title = f"Total Dabs: {t.lifetime_dabs:,}"
@@ -260,6 +264,7 @@ class PuffcoMenuBarApp(rumps.App):
             self.profiles_menu.clear()
             self._profile_slot_items.clear()
             for p in t.profiles:
+
                 def _make_slot_handler(slot_idx):
                     return lambda sender: self.client.set_profile(slot_idx)
 

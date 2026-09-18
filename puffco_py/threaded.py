@@ -6,7 +6,7 @@ and synchronous scripts.
 import asyncio
 import logging
 import threading
-from typing import Any, Callable, List, Optional
+from typing import Callable, List, Optional
 
 from .client import PuffcoClient
 from .discovery import PuffcoDiscoveredDevice, scan_puffco_devices
@@ -19,9 +19,9 @@ class ThreadedPuffcoClient:
     """
     Synchronous, thread-safe wrapper around PuffcoClient that runs Bleak in a
     dedicated, persistent background worker thread with its own event loop.
-    
+
     Ideal for integration with macOS menu apps (rumps), Tkinter, PyQt, or simple sync scripts.
-    
+
     Usage:
         client = ThreadedPuffcoClient("F7:11:95:C5:14:9B")
         client.start()
@@ -32,14 +32,23 @@ class ThreadedPuffcoClient:
         client.stop()
     """
 
-    def __init__(self, target_address: Optional[str] = None):
+    def __init__(self, target_address: Optional[str] = None, mock: bool = False):
         self.target_address = target_address
+        self.mock = mock
         self._client: Optional[PuffcoClient] = None
         self._thread: Optional[threading.Thread] = None
         self._loop: Optional[asyncio.AbstractEventLoop] = None
         self._running = False
         self._connected_event = threading.Event()
         self._telemetry_listeners: List[Callable[[PuffcoTelemetry], None]] = []
+        self._connection_listeners: List[Callable[[bool], None]] = []
+
+    def __enter__(self):
+        self.start()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
 
     @property
     def is_connected(self) -> bool:
@@ -59,6 +68,26 @@ class ThreadedPuffcoClient:
         """Removes a registered telemetry callback."""
         if callback in self._telemetry_listeners:
             self._telemetry_listeners.remove(callback)
+
+    def add_connection_listener(self, callback: Callable[[bool], None]):
+        """Registers a callback function invoked on connection state changes."""
+        self._connection_listeners.append(callback)
+
+    def remove_connection_listener(self, callback: Callable[[bool], None]):
+        """Removes a registered connection state callback."""
+        if callback in self._connection_listeners:
+            self._connection_listeners.remove(callback)
+
+    def _on_connection(self, connected: bool):
+        if connected:
+            self._connected_event.set()
+        else:
+            self._connected_event.clear()
+        for cb in self._connection_listeners:
+            try:
+                cb(connected)
+            except Exception as e:
+                logger.debug(f"Connection listener error: {e}")
 
     # ==========================================
     # WORKER THREAD ENGINE
@@ -167,13 +196,22 @@ class ThreadedPuffcoClient:
 
         async with self._async_lock:
             if self._client and self._client.is_connected:
-                if not self.target_address or self.target_address.upper() == (self._client.target_address or "").upper():
+                if (
+                    not self.target_address
+                    or self.target_address.upper() == (self._client.target_address or "").upper()
+                ):
                     return True
 
             await self._internal_disconnect()
 
-            self._client = PuffcoClient(self.target_address)
+            if self.mock:
+                from .mock import MockPuffcoClient
+
+                self._client = MockPuffcoClient(self.target_address or "F7:11:95:C5:14:9B")
+            else:
+                self._client = PuffcoClient(self.target_address)
             self._client.add_telemetry_listener(self._on_telemetry)
+            self._client.add_connection_listener(self._on_connection)
 
             try:
                 connected = await self._client.connect(timeout=timeout)
@@ -222,38 +260,42 @@ class ThreadedPuffcoClient:
     def start_session(self):
         """Triggers a heating session."""
         if self._client and self._loop and self._loop.is_running():
-            asyncio.run_coroutine_threadsafe(self._client.start_session(), self._loop)
+            return asyncio.run_coroutine_threadsafe(self._client.start_session(), self._loop)
 
     def stop_session(self):
         """Aborts heating session."""
         if self._client and self._loop and self._loop.is_running():
-            asyncio.run_coroutine_threadsafe(self._client.stop_session(), self._loop)
+            return asyncio.run_coroutine_threadsafe(self._client.stop_session(), self._loop)
 
     def boost(self):
         """Triggers session heat boost."""
         if self._client and self._loop and self._loop.is_running():
-            asyncio.run_coroutine_threadsafe(self._client.boost(), self._loop)
+            return asyncio.run_coroutine_threadsafe(self._client.boost(), self._loop)
 
     def set_profile(self, slot: int):
         """Changes active heat profile slot (0..3)."""
         if self._client and self._loop and self._loop.is_running():
-            asyncio.run_coroutine_threadsafe(self._client.set_profile(slot), self._loop)
+            return asyncio.run_coroutine_threadsafe(self._client.set_profile(slot), self._loop)
 
     def set_temperature(self, temp_f: float):
         """Sets temperature for active profile."""
         if self._client and self._loop and self._loop.is_running():
-            asyncio.run_coroutine_threadsafe(self._client.set_temperature(temp_f), self._loop)
+            return asyncio.run_coroutine_threadsafe(
+                self._client.set_temperature(temp_f), self._loop
+            )
 
     def set_stealth_mode(self, enabled: bool):
         """Toggles stealth lighting."""
         if self._client and self._loop and self._loop.is_running():
-            asyncio.run_coroutine_threadsafe(self._client.set_stealth_mode(enabled), self._loop)
+            return asyncio.run_coroutine_threadsafe(
+                self._client.set_stealth_mode(enabled), self._loop
+            )
 
     def set_lantern(self, enabled: bool):
         """Toggles lantern lighting mode."""
         if self._client and self._loop and self._loop.is_running():
             coro = self._client.start_lantern() if enabled else self._client.stop_lantern()
-            asyncio.run_coroutine_threadsafe(coro, self._loop)
+            return asyncio.run_coroutine_threadsafe(coro, self._loop)
 
     def _on_telemetry(self, telem: PuffcoTelemetry):
         for cb in self._telemetry_listeners:

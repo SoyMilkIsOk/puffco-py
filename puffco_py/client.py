@@ -6,13 +6,16 @@ import asyncio
 import logging
 import struct
 import time
-from typing import Any, Callable, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional
 
-try:
+if TYPE_CHECKING:
     from bleak import BleakClient, BleakScanner
-except ImportError:
-    BleakClient = None
-    BleakScanner = None
+else:
+    try:
+        from bleak import BleakClient, BleakScanner
+    except ImportError:
+        BleakClient = None
+        BleakScanner = None
 
 from .constants import (
     DEVINFO_FIRMWARE_UUID,
@@ -28,6 +31,8 @@ from .constants import (
     PATH_CHAMBER_TEMP,
     PATH_CHAMBER_TYPE,
     PATH_DEVICE_NAME,
+    PATH_LANTERN_CMD,
+    PATH_LED_BRIGHTNESS,
     PATH_MODE_CONTROL,
     PATH_ODOMETER_DABS,
     PATH_PROFILE_NAME_PREFIX,
@@ -35,8 +40,6 @@ from .constants import (
     PATH_PROFILE_TIME_PREFIX,
     PATH_STATE_ID,
     PATH_STEALTH_MODE,
-    PATH_LANTERN_CMD,
-    PATH_LED_BRIGHTNESS,
     PATH_TIME_ELAPSED,
     PATH_TIME_TOTAL,
     PUFFCO_LORAX_CHAR_CMD,
@@ -44,6 +47,12 @@ from .constants import (
     PUFFCO_LORAX_CHAR_VERSION,
 )
 from .discovery import scan_puffco_devices
+from .exceptions import (
+    PuffcoConnectionError,
+    PuffcoDeviceNotFoundError,
+    PuffcoError,
+    PuffcoTimeoutError,
+)
 from .models import (
     ChamberType,
     OperatingState,
@@ -68,7 +77,7 @@ logger = logging.getLogger("puffco_py.client")
 class PuffcoClient:
     """
     High-level, asynchronous Python BLE client for Puffco Peak Pro and Proxy.
-    
+
     Usage:
         client = PuffcoClient("F7:11:95:C5:14:9B")
         await client.connect()
@@ -81,12 +90,13 @@ class PuffcoClient:
         self,
         target_address: Optional[str] = None,
         auto_reconnect: bool = True,
+        ble_client: Optional[Any] = None,
     ):
         self.target_address = target_address
         self.auto_reconnect = auto_reconnect
         self.telemetry = PuffcoTelemetry()
 
-        self._client: Optional[BleakClient] = None
+        self._client: Optional[BleakClient] = ble_client
         self._seq = 0
         self._lock = asyncio.Lock()
         self._pending_replies: Dict[int, asyncio.Future] = {}
@@ -97,6 +107,10 @@ class PuffcoClient:
         self._stream_task: Optional[asyncio.Task] = None
         self._telemetry_listeners: List[Callable[[PuffcoTelemetry], None]] = []
         self._state_listeners: List[Callable[[OperatingState], None]] = []
+        self._connection_listeners: List[Callable[[bool], None]] = []
+
+        self._explicit_disconnect = False
+        self._reconnect_task: Optional[asyncio.Task] = None
 
     # ==========================================
     # CONTEXT MANAGER
@@ -113,23 +127,45 @@ class PuffcoClient:
     # ==========================================
     async def connect(self, timeout: float = 15.0) -> bool:
         """Connects to the Puffco device and completes the Lorax authentication handshake."""
-        if BleakClient is None:
-            raise RuntimeError("Bleak is not installed. Run 'pip install bleak'.")
+        if BleakClient is None and self._client is None:
+            raise PuffcoError("Bleak is not installed. Run 'pip install bleak'.")
 
-        if not self.target_address:
+        self._explicit_disconnect = False
+
+        if not self.target_address and self._client is None:
             logger.info("No target address provided. Scanning for nearby Puffco devices...")
             devices = await scan_puffco_devices(timeout=4.0)
             if not devices:
-                raise RuntimeError("No Puffco devices found nearby. Ensure device is powered on.")
+                raise PuffcoDeviceNotFoundError(
+                    "No Puffco devices found nearby. Ensure device is powered on."
+                )
             self.target_address = devices[0].address
-            logger.info(f"Auto-selected strongest device: {devices[0].name} ({self.target_address})")
+            logger.info(
+                f"Auto-selected strongest device: {devices[0].name} ({self.target_address})"
+            )
 
         logger.info(f"Connecting to Puffco ({self.target_address})...")
-        self._client = BleakClient(self.target_address)
-        await self._client.connect(timeout=timeout)
+        if self._client is None:
+            if not self.target_address:
+                raise PuffcoConnectionError("Target address is required to connect.")
+            self._client = BleakClient(
+                self.target_address,
+                disconnected_callback=self._on_ble_disconnected,
+            )
+        elif hasattr(self._client, "disconnected_callback"):
+            self._client.disconnected_callback = self._on_ble_disconnected
+
+        try:
+            await self._client.connect(timeout=timeout)
+        except Exception as exc:
+            self.telemetry.connected = False
+            self.telemetry.operating_state = OperatingState.DISCONNECTED
+            raise PuffcoConnectionError(
+                f"Failed to connect to Puffco ({self.target_address}): {exc}"
+            ) from exc
 
         self.telemetry.connected = True
-        self.telemetry.mac_address = self.target_address
+        self.telemetry.mac_address = self.target_address or ""
 
         # Keep connection alive by reading Lorax version if present
         try:
@@ -138,8 +174,12 @@ class PuffcoClient:
             pass
 
         # Subscribe to Lorax reply notifications
-        await self._client.start_notify(PUFFCO_LORAX_CHAR_REPLY, self._on_lorax_notification)
-        await asyncio.sleep(0.05)
+        try:
+            await self._client.start_notify(PUFFCO_LORAX_CHAR_REPLY, self._on_lorax_notification)
+            await asyncio.sleep(0.05)
+        except Exception as exc:
+            await self.disconnect()
+            raise PuffcoConnectionError(f"Failed to subscribe to Lorax replies: {exc}") from exc
 
         # Authenticate with SHA-256 challenge-response
         await self._authenticate()
@@ -149,20 +189,61 @@ class PuffcoClient:
         await self._poll_slow_diagnostics()
         await self._poll_fast_telemetry()
 
+        self._notify_connection_listeners(True)
         logger.info(f"Connected and authenticated with {self.telemetry.device_name}!")
         return True
 
     async def disconnect(self):
         """Stops telemetry stream and cleanly disconnects from the device."""
+        self._explicit_disconnect = True
+        if self._reconnect_task and not self._reconnect_task.done():
+            self._reconnect_task.cancel()
+            self._reconnect_task = None
+
         await self.stop_telemetry_stream()
         if self._client and self._client.is_connected:
             try:
                 await self._client.disconnect()
             except Exception as e:
                 logger.debug(f"Disconnect error: {e}")
+
         self.telemetry.connected = False
         self.telemetry.operating_state = OperatingState.DISCONNECTED
         self._client = None
+        self._notify_connection_listeners(False)
+
+    def _on_ble_disconnected(self, _client):
+        """Callback invoked by Bleak upon unexpected BLE connection drop."""
+        logger.warning(f"Puffco device ({self.target_address}) disconnected unexpectedly.")
+        self.telemetry.connected = False
+        self.telemetry.operating_state = OperatingState.DISCONNECTED
+        self._notify_connection_listeners(False)
+        self._notify_listeners()
+
+        if self.auto_reconnect and not self._explicit_disconnect:
+            if self._reconnect_task is None or self._reconnect_task.done():
+                try:
+                    loop = asyncio.get_running_loop()
+                    self._reconnect_task = loop.create_task(self._reconnect_loop())
+                except RuntimeError:
+                    pass
+
+    async def _reconnect_loop(self):
+        """Background loop attempting reconnect with exponential backoff."""
+        delay = 2.0
+        max_delay = 15.0
+        while self.auto_reconnect and not self._explicit_disconnect and not self.is_connected:
+            logger.info(f"Attempting to reconnect to Puffco in {delay:.1f}s...")
+            await asyncio.sleep(delay)
+            if self._explicit_disconnect:
+                break
+            try:
+                await self.connect(timeout=10.0)
+                logger.info(f"Reconnected successfully to {self.telemetry.device_name}!")
+                break
+            except Exception as e:
+                logger.debug(f"Reconnect attempt failed: {e}")
+                delay = min(delay * 1.5, max_delay)
 
     @property
     def is_connected(self) -> bool:
@@ -181,6 +262,8 @@ class PuffcoClient:
                     return
                 else:
                     logger.warning(f"Lorax unlock returned status code {status}")
+            else:
+                logger.warning(f"Lorax get seed returned status {status}")
         except Exception as e:
             logger.warning(f"Lorax auth handshake note: {e}")
         self._auth_completed = True
@@ -196,9 +279,11 @@ class PuffcoClient:
         except Exception as e:
             logger.debug(f"Error handling reply packet: {e}")
 
-    async def _send_lorax_cmd(self, opcode: int, payload: bytes = b"", timeout: float = 1.5) -> tuple:
+    async def _send_lorax_cmd(
+        self, opcode: int, payload: bytes = b"", timeout: float = 1.5
+    ) -> tuple:
         if not self._client or not self._client.is_connected:
-            raise RuntimeError("Device is not connected")
+            raise PuffcoConnectionError("Device is not connected")
 
         async with self._lock:
             self._seq = (self._seq + 1) & 0xFFFF
@@ -214,24 +299,37 @@ class PuffcoClient:
 
             try:
                 await self._client.write_gatt_char(PUFFCO_LORAX_CHAR_CMD, pkt, response=False)
-                status, reply_payload = await asyncio.wait_for(fut, timeout=timeout)
-                return status, reply_payload
+                try:
+                    status, reply_payload = await asyncio.wait_for(fut, timeout=timeout)
+                    return status, reply_payload
+                except asyncio.TimeoutError as exc:
+                    raise PuffcoTimeoutError(
+                        f"Lorax command opcode 0x{opcode:02X} (seq {seq}) timed out after {timeout}s"
+                    ) from exc
             finally:
                 self._pending_replies.pop(seq, None)
 
     async def read_path(self, path: str, max_len: int = 240) -> bytes:
         """Reads a virtual file path on the device over Lorax VFS."""
         payload = pack_lorax_read_short(path, max_len=max_len)
-        status, data = await self._send_lorax_cmd(LORAX_OP_READ_SHORT, payload)
-        if status != 0:
+        try:
+            status, data = await self._send_lorax_cmd(LORAX_OP_READ_SHORT, payload)
+            if status != 0:
+                return b""
+            return data
+        except (PuffcoError, asyncio.TimeoutError) as e:
+            logger.debug(f"Read path '{path}' failed: {e}")
             return b""
-        return data
 
     async def write_path(self, path: str, val: bytes) -> bool:
         """Writes binary data to a virtual file path on the device over Lorax VFS."""
         payload = pack_lorax_write_short(path, val)
-        status, _ = await self._send_lorax_cmd(LORAX_OP_WRITE_SHORT, payload)
-        return status == 0
+        try:
+            status, _ = await self._send_lorax_cmd(LORAX_OP_WRITE_SHORT, payload)
+            return status == 0
+        except (PuffcoError, asyncio.TimeoutError) as e:
+            logger.debug(f"Write path '{path}' failed: {e}")
+            return False
 
     # ==========================================
     # TELEMETRY POLLING ENGINE
@@ -290,8 +388,16 @@ class PuffcoClient:
             elap_b = await self.read_path(PATH_TIME_ELAPSED)
             tott_b = await self.read_path(PATH_TIME_TOTAL)
             if len(elap_b) >= 4 and len(tott_b) >= 4:
-                elap = struct.unpack("<f", elap_b[:4])[0] if len(elap_b) == 4 else struct.unpack("<I", elap_b[:4])[0]
-                tott = struct.unpack("<f", tott_b[:4])[0] if len(tott_b) == 4 else struct.unpack("<I", tott_b[:4])[0]
+                elap = (
+                    struct.unpack("<f", elap_b[:4])[0]
+                    if len(elap_b) == 4
+                    else struct.unpack("<I", elap_b[:4])[0]
+                )
+                tott = (
+                    struct.unpack("<f", tott_b[:4])[0]
+                    if len(tott_b) == 4
+                    else struct.unpack("<I", tott_b[:4])[0]
+                )
                 if tott > 300:
                     tott /= 1000.0
                     elap /= 1000.0
@@ -351,11 +457,17 @@ class PuffcoClient:
             pt_b = await self.read_path(PATH_PROFILE_TEMP_PREFIX.format(slot=slot))
             ptime_b = await self.read_path(PATH_PROFILE_TIME_PREFIX.format(slot=slot))
 
-            p_name = pn_b.decode("utf-8", errors="ignore").rstrip("\x00").strip() if pn_b else f"Profile {slot+1}"
+            p_name = (
+                pn_b.decode("utf-8", errors="ignore").rstrip("\x00").strip()
+                if pn_b
+                else f"Profile {slot + 1}"
+            )
             p_temp = int(round(parse_temp(pt_b))) if pt_b else 0
             p_time = struct.unpack("<I", ptime_b[:4])[0] if ptime_b and len(ptime_b) >= 4 else 45
 
-            profiles.append(PuffcoProfile(slot=slot, name=p_name, target_temp_f=p_temp, duration_s=p_time))
+            profiles.append(
+                PuffcoProfile(slot=slot, name=p_name, target_temp_f=p_temp, duration_s=p_time)
+            )
 
         if profiles:
             self.telemetry.profiles = profiles
@@ -376,9 +488,35 @@ class PuffcoClient:
         """Registers a listener for live telemetry updates."""
         self._telemetry_listeners.append(callback)
 
+    def remove_telemetry_listener(self, callback: Callable[[PuffcoTelemetry], None]):
+        """Removes a registered telemetry listener."""
+        if callback in self._telemetry_listeners:
+            self._telemetry_listeners.remove(callback)
+
     def add_state_listener(self, callback: Callable[[OperatingState], None]):
         """Registers a listener for operating state changes."""
         self._state_listeners.append(callback)
+
+    def remove_state_listener(self, callback: Callable[[OperatingState], None]):
+        """Removes a registered operating state listener."""
+        if callback in self._state_listeners:
+            self._state_listeners.remove(callback)
+
+    def add_connection_listener(self, callback: Callable[[bool], None]):
+        """Registers a listener for connection status changes (connected=True/False)."""
+        self._connection_listeners.append(callback)
+
+    def remove_connection_listener(self, callback: Callable[[bool], None]):
+        """Removes a registered connection status listener."""
+        if callback in self._connection_listeners:
+            self._connection_listeners.remove(callback)
+
+    def _notify_connection_listeners(self, connected: bool):
+        for cb in self._connection_listeners:
+            try:
+                cb(connected)
+            except Exception as e:
+                logger.debug(f"Connection listener error: {e}")
 
     def _notify_listeners(self):
         for cb in self._telemetry_listeners:
@@ -434,18 +572,23 @@ class PuffcoClient:
     async def start_session(self) -> bool:
         """Starts a heating session with the active profile."""
         logger.info("Starting heating session...")
-        self.telemetry.operating_state = OperatingState.HEAT_PREHEAT
-        self._notify_listeners()
-        return await self.write_path(PATH_MODE_CONTROL, bytes([0x07]))
+        self._stop_guard_until = 0.0
+        success = await self.write_path(PATH_MODE_CONTROL, bytes([0x07]))
+        if success:
+            self.telemetry.operating_state = OperatingState.HEAT_PREHEAT
+            self._notify_listeners()
+        return success
 
     async def stop_session(self) -> bool:
         """Aborts / stops the active heating session."""
         logger.info("Aborting session...")
-        self.telemetry.operating_state = OperatingState.IDLE
-        self.telemetry.time_remaining = 0
         self._stop_guard_until = time.time() + 2.0
-        self._notify_listeners()
-        return await self.write_path(PATH_MODE_CONTROL, bytes([0x08]))
+        success = await self.write_path(PATH_MODE_CONTROL, bytes([0x08]))
+        if success:
+            self.telemetry.operating_state = OperatingState.IDLE
+            self.telemetry.time_remaining = 0
+            self._notify_listeners()
+        return success
 
     async def boost(self) -> bool:
         """Triggers heat boost (+time and +temp) during an active session."""
@@ -514,12 +657,14 @@ class PuffcoClient:
         base, mid chamber, glass stem, and logo.
         """
         logger.info(f"Setting LED brightness (base={base}, mid={mid}, glass={glass}, logo={logo})")
-        payload = bytes([
-            max(0, min(255, int(base))),
-            max(0, min(255, int(mid))),
-            max(0, min(255, int(glass))),
-            max(0, min(255, int(logo))),
-        ])
+        payload = bytes(
+            [
+                max(0, min(255, int(base))),
+                max(0, min(255, int(mid))),
+                max(0, min(255, int(glass))),
+                max(0, min(255, int(logo))),
+            ]
+        )
         return await self.write_path(PATH_LED_BRIGHTNESS, payload)
 
     async def enter_sleep_mode(self) -> bool:
@@ -542,4 +687,4 @@ class PuffcoClient:
         data = await self.read_path(PATH_ODOMETER_DABS)
         if data and len(data) >= 4:
             return struct.unpack("<I", data[:4])[0]
-        return self.telemetry.total_dabs
+        return self.telemetry.lifetime_dabs

@@ -7,6 +7,10 @@ where = ["."]
 include = ["puffco_py*"]
 exclude = ["site*", "tests*", "examples*", "build*"]
 
+[tool.setuptools.package-data]
+puffco_py = ["py.typed"]
+
+
 [project]
 name = "puffco-py"
 version = "0.1.1"
@@ -26,6 +30,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: System :: Hardware :: Hardware Drivers",
 ]
 requires-python = ">=3.9"
@@ -43,6 +48,9 @@ gui = [
 dev = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "build>=1.0.0",
 ]
 
 [project.scripts]
@@ -54,3 +62,31 @@ Homepage = "https://github.com/SoyMilkIsOk/puffco-py"
 Documentation = "https://github.com/SoyMilkIsOk/puffco-py#readme"
 Repository = "https://github.com/SoyMilkIsOk/puffco-py.git"
 "Bug Tracker" = "https://github.com/SoyMilkIsOk/puffco-py/issues"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+files = ["puffco_py"]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+check_untyped_defs = true
+disallow_untyped_defs = false
+
+[[tool.mypy.overrides]]
+module = "puffco_py.cli"
+ignore_errors = true
+
+

@@ -24,9 +24,9 @@ A standalone, modern, asynchronous Python client and real-time telemetry engine 
 
 We acknowledge the earlier exploratory work of [Fr0st3h / PuffcoBLE](https://github.com/Fr0st3h/PuffcoBLE) (`puffcoble`), which demonstrated basic BLE reads. `puffco-py` was independently created from scratch to provide a modern, production-grade SDK and real-time telemetry engine:
 
-- **Reactive Telemetry Engine**: Rather than issuing manual one-shot reads, `puffco-py` continuously streams live bowl temperature, session countdowns, and battery state via an adaptive background loop with event-driven Observer listeners (`add_telemetry_listener`, `add_state_listener`).
-- **Strongly-Typed Domain Models**: Built on rich dataclasses (`PuffcoTelemetry`, `PuffcoDeviceInfo`) and enums (`DeviceState`, `ChamberType`) with automatic Fahrenheit/Celsius conversions, replacing raw untyped primitives.
-- **Threaded GUI Bridge**: Includes `PuffcoThreadedClient` running the event loop on an isolated daemon thread, making it seamless to integrate with Tkinter, PyQt, PySide, and macOS menu bar widgets without fighting asyncio event loop threading issues.
+- **Reactive Telemetry Engine**: Rather than issuing manual one-shot reads, `puffco-py` continuously streams live bowl temperature, session countdowns, and battery state via an adaptive background loop with event-driven Observer listeners (`add_telemetry_listener`, `add_state_listener`, `add_connection_listener`).
+- **Strongly-Typed Domain Models**: Built on rich dataclasses (`PuffcoTelemetry`, `PuffcoProfile`) and enums (`OperatingState`, `ChamberType`) with automatic Fahrenheit/Celsius conversions, replacing raw untyped primitives.
+- **Threaded GUI Bridge**: Includes `ThreadedPuffcoClient` running the event loop on an isolated daemon thread, making it seamless to integrate with Tkinter, PyQt, PySide, and macOS menu bar widgets without fighting asyncio event loop threading issues.
 - **Interactive Terminal Suite**: Built-in CLI with live terminal dashboards (`puffco-py monitor`) powered by `rich`, device discovery (`puffco-py scan`), diagnostics (`puffco-py info`), and session controls.
 - **Broader Python Compatibility**: Supports **Python 3.9+** (compared to 3.11+).
 - **Automated Test Suite**: Full offline unit test suite with mock packet framing, sequence serialization, and SHA-256 challenge authentication verification.
@@ -35,7 +35,13 @@ We acknowledge the earlier exploratory work of [Fr0st3h / PuffcoBLE](https://git
 
 ## 📦 Installation
 
-Install from source or local checkout:
+Install from PyPI:
+
+```bash
+pip install puffco-py
+```
+
+Or install from source:
 
 ```bash
 git clone https://github.com/SoyMilkIsOk/puffco-py.git
@@ -59,11 +65,14 @@ pip install ".[cli,gui]"
 import asyncio
 from puffco_py import PuffcoClient
 
+
 async def main():
     # Automatically scans for and connects to the nearest Puffco device
     async with PuffcoClient() as client:
         print(f"Connected to: {client.telemetry.device_name}")
-        print(f"Chamber: {client.telemetry.chamber_name} | Battery: {client.telemetry.battery_pct}%")
+        print(
+            f"Chamber: {client.telemetry.chamber_name} | Battery: {client.telemetry.battery_pct}%"
+        )
 
         # Stream live telemetry updates
         def on_update(telemetry):
@@ -76,6 +85,7 @@ async def main():
         await asyncio.sleep(15)
 
         client.remove_telemetry_listener(on_update)
+
 
 asyncio.run(main())
 ```

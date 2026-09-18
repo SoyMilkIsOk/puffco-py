@@ -1,0 +1,38 @@
+name: Feature Request
+description: Suggest a new capability, CLI command, Lorax endpoint, or integration for puffco-py.
+title: "[Feature]: <Short description of proposed feature>"
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea for `puffco-py`? We'd love to hear it! Please outline your proposal below.
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: Problem or Motivation
+      description: Is your feature request related to a problem or limitation in puffco-py?
+      placeholder: "I'm always frustrated when..."
+    validations:
+      required: true
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: Proposed Solution
+      description: Clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives_considered
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions, mock-ups, or workarounds you've considered.
+    validations:
+      required: false
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Add any relevant Lorax VFS paths, screenshots, or protocol research.
+    validations:
+      required: false

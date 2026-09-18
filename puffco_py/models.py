@@ -4,11 +4,12 @@ Data models, enums, and telemetry structures for Puffco BLE communication.
 
 from dataclasses import dataclass, field
 from enum import IntEnum
-from typing import List, Optional
+from typing import List
 
 
 class OperatingState(IntEnum):
     """Puffco hardware operating states."""
+
     DISCONNECTED = 0
     OFF = 1
     BOOTING = 2
@@ -26,6 +27,7 @@ class OperatingState(IntEnum):
 
 class ChamberType(IntEnum):
     """Chamber hardware attachments."""
+
     NONE = 0
     STANDARD = 1
     CHAMBER_3DXL_V1 = 2
@@ -47,6 +49,7 @@ CHAMBER_NAMES = {
 @dataclass
 class PuffcoProfile:
     """A heat profile stored on the device."""
+
     slot: int
     name: str
     target_temp_f: int
@@ -59,6 +62,7 @@ class PuffcoProfile:
 @dataclass
 class PuffcoTelemetry:
     """Real-time live telemetry and hardware diagnostics."""
+
     connected: bool = False
     mac_address: str = ""
     device_name: str = "Puffco Device"

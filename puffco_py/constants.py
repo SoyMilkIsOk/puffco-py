@@ -8,10 +8,10 @@ Protocol constants, UUIDs, opcodes, and VFS paths for Puffco devices.
 
 # Modern Lorax VFS Protocol (Firmware X, W, AW, 1.0+)
 PUFFCO_LORAX_SVC_UUID = "e276967f-ea8a-478a-a92e-d78f5dd15dd5"
-PUFFCO_LORAX_CHAR_CMD = "60133d5c-5727-4f2c-9697-d842c5292a3c"       # Write without response
-PUFFCO_LORAX_CHAR_REPLY = "8dc5ec05-8f7d-45ad-99db-3fbde65dbd9c"     # Notify / Indicate
-PUFFCO_LORAX_CHAR_EVENT = "43312cd1-7d34-46ce-a7d3-0a98fd9b4cb8"     # Notify
-PUFFCO_LORAX_CHAR_VERSION = "05434bca-cc7f-4ef6-bbb3-b1c520b9800c"   # Read
+PUFFCO_LORAX_CHAR_CMD = "60133d5c-5727-4f2c-9697-d842c5292a3c"  # Write without response
+PUFFCO_LORAX_CHAR_REPLY = "8dc5ec05-8f7d-45ad-99db-3fbde65dbd9c"  # Notify / Indicate
+PUFFCO_LORAX_CHAR_EVENT = "43312cd1-7d34-46ce-a7d3-0a98fd9b4cb8"  # Notify
+PUFFCO_LORAX_CHAR_VERSION = "05434bca-cc7f-4ef6-bbb3-b1c520b9800c"  # Read
 
 # Legacy Flat GATT Protocol (Firmware < X)
 PUFFCO_LEGACY_SVC_UUID = "06caf9c0-74d3-454f-9be9-e30cd999c17a"
@@ -47,29 +47,29 @@ LORAX_OP_UNWATCH = 0x31
 # COMMON LORAX VFS PATHS
 # ==========================================
 # Operating & State
-PATH_STATE_ID = "/p/app/stat/id"          # Operating state byte
-PATH_TIME_ELAPSED = "/p/app/stat/elap"    # Elapsed session time
-PATH_TIME_TOTAL = "/p/app/stat/tott"      # Total session time
-PATH_MODE_CONTROL = "/p/app/mc"           # Mode control commands (start/stop/boost)
+PATH_STATE_ID = "/p/app/stat/id"  # Operating state byte
+PATH_TIME_ELAPSED = "/p/app/stat/elap"  # Elapsed session time
+PATH_TIME_TOTAL = "/p/app/stat/tott"  # Total session time
+PATH_MODE_CONTROL = "/p/app/mc"  # Mode control commands (start/stop/boost)
 
 # Heater & Temperature
-PATH_CHAMBER_TEMP = "/p/app/htr/temp"     # Real-time live temperature
-PATH_TARGET_TEMP = "/p/app/htr/ttag"      # Target session temperature
-PATH_CHAMBER_TYPE = "/p/htr/chmt"         # Chamber hardware type byte
+PATH_CHAMBER_TEMP = "/p/app/htr/temp"  # Real-time live temperature
+PATH_TARGET_TEMP = "/p/app/htr/ttag"  # Target session temperature
+PATH_CHAMBER_TYPE = "/p/htr/chmt"  # Chamber hardware type byte
 
 # Battery & Power
-PATH_BATTERY_SOC = "/p/bat/soc"           # Battery state of charge (percentage)
+PATH_BATTERY_SOC = "/p/bat/soc"  # Battery state of charge (percentage)
 PATH_BATTERY_CHARGE_STAT = "/p/bat/chg/stat"  # 0,1,2 = Charging
 
 # Metrics & Odometer
-PATH_ODOMETER_DABS = "/p/app/odom/0/nc"   # Lifetime total dabs count
+PATH_ODOMETER_DABS = "/p/app/odom/0/nc"  # Lifetime total dabs count
 
 # User Configuration & Profiles
-PATH_DEVICE_NAME = "/u/sys/name"          # Custom user device name
-PATH_ACTIVE_PROFILE = "/p/app/hcs"        # Active profile index (0..3)
-PATH_STEALTH_MODE = "/u/app/ui/stlm"      # Stealth lighting toggle (0=Off, 1=On)
-PATH_LANTERN_CMD = "/p/app/ltrn/cmd"      # Lantern mode toggle (0=Off, 1=On)
-PATH_LED_BRIGHTNESS = "/u/app/ui/brt"     # LED brightness (4 bytes: base, mid, glass, logo)
+PATH_DEVICE_NAME = "/u/sys/name"  # Custom user device name
+PATH_ACTIVE_PROFILE = "/p/app/hcs"  # Active profile index (0..3)
+PATH_STEALTH_MODE = "/u/app/ui/stlm"  # Stealth lighting toggle (0=Off, 1=On)
+PATH_LANTERN_CMD = "/p/app/ltrn/cmd"  # Lantern mode toggle (0=Off, 1=On)
+PATH_LED_BRIGHTNESS = "/u/app/ui/brt"  # LED brightness (4 bytes: base, mid, glass, logo)
 PATH_PROFILE_NAME_PREFIX = "/u/app/hc/{slot}/name"
 PATH_PROFILE_TEMP_PREFIX = "/u/app/hc/{slot}/temp"
 PATH_PROFILE_TIME_PREFIX = "/u/app/hc/{slot}/time"

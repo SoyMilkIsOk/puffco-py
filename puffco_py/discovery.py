@@ -5,22 +5,28 @@ Device discovery and BLE scanning engine for Puffco hardware.
 import asyncio
 import logging
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
-try:
+if TYPE_CHECKING:
     from bleak import BleakScanner
     from bleak.backends.device import BLEDevice
     from bleak.backends.scanner import AdvertisementData
-except ImportError:
-    BleakScanner = None
-    BLEDevice = None
-    AdvertisementData = None
+else:
+    try:
+        from bleak import BleakScanner
+        from bleak.backends.device import BLEDevice
+        from bleak.backends.scanner import AdvertisementData
+    except ImportError:
+        BleakScanner = None
+        BLEDevice = None
+        AdvertisementData = None
 
 from .constants import (
     PUFFCO_LORAX_SVC_UUID,
     PUFFCO_MAC_PREFIXES,
     PUFFCO_NAME_KEYWORDS,
 )
+from .exceptions import PuffcoConnectionError, PuffcoError
 
 logger = logging.getLogger("puffco_py.discovery")
 
@@ -28,6 +34,7 @@ logger = logging.getLogger("puffco_py.discovery")
 @dataclass
 class PuffcoDiscoveredDevice:
     """A discovered Puffco BLE device."""
+
     name: str
     address: str
     rssi: int
@@ -40,10 +47,12 @@ class PuffcoDiscoveredDevice:
 
 def is_puffco_device(device: BLEDevice, adv: AdvertisementData) -> bool:
     """Determines if a discovered BLE device is a Puffco product."""
-    # 1. Check Advertised Local Name
+    # 1. Check Advertised Local Name (use word boundaries to avoid false positives like 'speaker')
     dev_name = (adv.local_name or device.name or "").lower()
+    import re
+
     for kw in PUFFCO_NAME_KEYWORDS:
-        if kw in dev_name:
+        if re.search(r"\b" + re.escape(kw) + r"\b", dev_name):
             return True
 
     # 2. Check Service UUIDs (Lorax)
@@ -67,7 +76,7 @@ async def scan_puffco_devices(timeout: float = 5.0) -> List[PuffcoDiscoveredDevi
     Returns a sorted list of discovered devices ordered by signal strength (RSSI).
     """
     if BleakScanner is None:
-        raise RuntimeError("Bleak is not installed. Install with 'pip install bleak'.")
+        raise PuffcoError("Bleak is not installed. Install with 'pip install bleak'.")
 
     discovered: dict[str, PuffcoDiscoveredDevice] = {}
 
@@ -76,8 +85,10 @@ async def scan_puffco_devices(timeout: float = 5.0) -> List[PuffcoDiscoveredDevi
             name = adv.local_name or device.name or "Puffco Device"
             is_lorax = False
             if adv.service_uuids:
-                is_lorax = any(PUFFCO_LORAX_SVC_UUID.lower() in u.lower() for u in adv.service_uuids)
-            
+                is_lorax = any(
+                    PUFFCO_LORAX_SVC_UUID.lower() in u.lower() for u in adv.service_uuids
+                )
+
             discovered[device.address] = PuffcoDiscoveredDevice(
                 name=name,
                 address=device.address,
@@ -86,10 +97,13 @@ async def scan_puffco_devices(timeout: float = 5.0) -> List[PuffcoDiscoveredDevi
                 device=device,
             )
 
-    scanner = BleakScanner(detection_callback=_detection_callback)
-    await scanner.start()
-    await asyncio.sleep(timeout)
-    await scanner.stop()
+    try:
+        scanner = BleakScanner(detection_callback=_detection_callback)
+        await scanner.start()
+        await asyncio.sleep(timeout)
+        await scanner.stop()
+    except Exception as exc:
+        raise PuffcoConnectionError(f"BLE scanner error: {exc}") from exc
 
     # Sort descending by signal strength
     results = sorted(discovered.values(), key=lambda d: d.rssi, reverse=True)

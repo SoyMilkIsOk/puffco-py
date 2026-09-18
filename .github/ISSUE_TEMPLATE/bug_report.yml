@@ -1,0 +1,94 @@
+name: Bug Report
+description: Report a reproducible bug, BLE connection issue, or traceback in puffco-py.
+title: "[Bug]: <Short description of the problem>"
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting an issue with `puffco-py`! Please provide the details below so we can diagnose and fix it quickly.
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: What OS are you running?
+      options:
+        - macOS (Apple Silicon - M1/M2/M3/M4)
+        - macOS (Intel)
+        - Linux (Ubuntu / Debian)
+        - Linux (Arch / Fedora / Other)
+        - Windows 10 / 11
+        - Raspberry Pi OS
+    validations:
+      required: true
+  - type: dropdown
+    id: python_version
+    attributes:
+      label: Python Version
+      description: What Python version are you using?
+      options:
+        - "3.13"
+        - "3.12"
+        - "3.11"
+        - "3.10"
+        - "3.9"
+        - Other / Conda
+    validations:
+      required: true
+  - type: dropdown
+    id: device_model
+    attributes:
+      label: Puffco Device Model
+      description: Which device are you connecting to?
+      options:
+        - Peak Pro (Original / V1)
+        - Peak Pro (V2 / New Peak Pro)
+        - Puffco Proxy
+        - Puffco Pivot
+        - Simulated Device (--mock)
+        - Other / Unknown
+    validations:
+      required: true
+  - type: input
+    id: firmware_and_chamber
+    attributes:
+      label: Firmware Version & Chamber Type
+      description: What firmware version and chamber hardware are installed?
+      placeholder: e.g. FW v1.2.3, 3DXL chamber
+    validations:
+      required: false
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: How can the issue be reproduced? Include commands or Python code snippets.
+      placeholder: |
+        1. Run `puffco-py monitor --mac F7:...`
+        2. Wait for connection...
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+    validations:
+      required: true
+  - type: textarea
+    id: logs_and_traceback
+    attributes:
+      label: Terminal Logs / Full Traceback
+      description: Paste any error messages, Python tracebacks, or debug logs (run with `-v` or `--verbose` if applicable).
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Sanity Checks
+      options:
+        - label: I verified Bluetooth is turned ON and granted terminal Bluetooth permissions (if on macOS).
+          required: true
+        - label: I searched existing open and closed issues and did not find a duplicate report.
+          required: true

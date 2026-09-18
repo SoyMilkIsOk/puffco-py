@@ -1,0 +1,66 @@
+name: Hardware Dump / New Device Submission
+description: Submit diagnostic output or GATT dumps from new Puffco hardware or firmware updates.
+title: "[Device Dump]: <Device Name / Model>"
+labels: ["hardware", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for contributing telemetry and diagnostic dumps to expand `puffco-py` hardware compatibility!
+  - type: dropdown
+    id: device_model
+    attributes:
+      label: Puffco Device Model
+      description: Which hardware model are you reporting?
+      options:
+        - Peak Pro (Original / V1)
+        - Peak Pro (V2 / New Peak Pro)
+        - Puffco Proxy
+        - Puffco Pivot
+        - Other / Unknown Device
+    validations:
+      required: true
+  - type: input
+    id: firmware_version
+    attributes:
+      label: Firmware Version
+      description: The firmware version reported by official app or `puffco-py info`.
+      placeholder: e.g. W.X.Y (FW v1.2.3)
+    validations:
+      required: false
+  - type: dropdown
+    id: chamber_type
+    attributes:
+      label: Chamber Hardware Installed
+      description: Which chamber is attached to the device?
+      options:
+        - 3DXL Chamber
+        - Standard 3D Chamber
+        - Original Peak Pro Chamber
+        - Proxy Chamber
+        - None / No Chamber Attached
+    validations:
+      required: true
+  - type: textarea
+    id: cli_info_output
+    attributes:
+      label: Terminal Output from `puffco-py info`
+      description: Run `puffco-py info` and paste the complete output table below.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: raw_gatt_dump
+    attributes:
+      label: Raw GATT Scan or Packet Logs (Optional)
+      description: Paste any Wireshark btsnoop outputs, nRF Connect service listings, or discovered Lorax VFS paths.
+      render: text
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Confirmation
+      options:
+        - label: I have verified that this dump does not contain sensitive personal data.
+          required: true

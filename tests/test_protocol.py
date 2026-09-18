@@ -8,9 +8,7 @@ import unittest
 from puffco_py.constants import (
     LORAX_MASTER_HANDSHAKE_KEY,
     LORAX_OP_GET_ACCESS_SEED,
-    LORAX_OP_READ_SHORT,
     LORAX_OP_UNLOCK_ACCESS,
-    LORAX_OP_WRITE_SHORT,
 )
 from puffco_py.protocol import (
     calculate_lorax_auth_token,
@@ -59,7 +57,7 @@ class TestProtocol(unittest.TestCase):
 
         self.assertEqual(seq, 5)
         self.assertEqual(status, 0)
-        self.assertEqual(payload, b"\xDE\xAD\xBE\xEF")
+        self.assertEqual(payload, b"\xde\xad\xbe\xef")
 
     def test_pack_read_and_write_short(self):
         """Verify packing of short VFS paths."""

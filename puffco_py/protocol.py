@@ -9,15 +9,15 @@ from typing import Tuple
 
 from .constants import (
     LORAX_MASTER_HANDSHAKE_KEY,
-    LORAX_OP_READ_SHORT,
-    LORAX_OP_WRITE_SHORT,
 )
 
 
-def calculate_lorax_auth_token(seed: bytes, master_key: bytes = LORAX_MASTER_HANDSHAKE_KEY) -> bytes:
+def calculate_lorax_auth_token(
+    seed: bytes, master_key: bytes = LORAX_MASTER_HANDSHAKE_KEY
+) -> bytes:
     """
     Computes the 16-byte SHA-256 challenge-response token for Lorax VFS access.
-    
+
     Formula: SHA256(MasterKey + Seed[0:16])[0:16]
     """
     if len(seed) < 16:
@@ -28,7 +28,7 @@ def calculate_lorax_auth_token(seed: bytes, master_key: bytes = LORAX_MASTER_HAN
 def pack_lorax_cmd(seq: int, opcode: int, payload: bytes = b"") -> bytearray:
     """
     Packs a Lorax command into a binary packet.
-    
+
     Layout:
       [0..1]: uint16 Little-Endian sequence number
       [2]:    uint8  opcode
@@ -40,7 +40,7 @@ def pack_lorax_cmd(seq: int, opcode: int, payload: bytes = b"") -> bytearray:
 def unpack_lorax_reply(data: bytes) -> Tuple[int, int, bytes]:
     """
     Unpacks a Lorax reply notification.
-    
+
     Layout:
       [0..1]: uint16 Little-Endian sequence number
       [2]:    uint8  status (0 = SUCCESS)
@@ -73,6 +73,7 @@ def pack_lorax_write_short(path: str, val: bytes) -> bytes:
 # ==========================================
 # TEMPERATURE CONVERSIONS & PARSERS
 # ==========================================
+
 
 def c_to_f(c: float) -> float:
     """Convert Celsius to Fahrenheit."""

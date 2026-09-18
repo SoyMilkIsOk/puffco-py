@@ -6,8 +6,8 @@ battery percentage, and session countdown in real-time.
 """
 
 import asyncio
-from pathlib import Path
 import sys
+from pathlib import Path
 
 # Ensure parent directory is in sys.path when running from source or subfolder
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
