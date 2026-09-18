@@ -130,10 +130,10 @@ A dataclass representing a single saved heat profile slot:
 ```python
 @dataclass
 class PuffcoProfile:
-    slot: int           # 0 to 3
-    name: str           # Display name (e.g. "Low", "Max")
-    target_temp_f: float # Target temperature in °F
-    duration_s: int     # Session duration in seconds
+    slot: int  # 0 to 3
+    name: str  # Display name (e.g. "Low", "Max")
+    target_temp_f: float  # Target temperature in °F
+    duration_s: int  # Session duration in seconds
 ```
 
 ---
